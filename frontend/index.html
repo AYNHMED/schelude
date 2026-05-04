@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schelude</title>
+<style>
+  :root {
+    --bg: #f5f5f3;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.1);
+    --text-primary: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --accent: #534AB7;
+    --accent-light: #EEEDFE;
+    --accent-dark: #3C3489;
+    --radius-card: 10px;
+    --radius-small: 6px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  
+  /* ZONE 1: LEFT SIDEBAR */
+  #sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 0.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .app-brand {
+    padding: 24px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.2px;
+  }
+  .app-brand span { color: var(--accent); }
+  
+  .nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px;
+    gap: 4px;
+  }
+  .nav-item {
+    padding: 8px 12px;
+    border-radius: var(--radius-small);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.1s, color 0.1s;
+  }
+  .nav-item:hover { background: rgba(0,0,0,0.03); color: var(--text-primary); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent-dark); }
+  
+  .agent-status {
+    padding: 20px;
+    border-top: 0.5px solid var(--border);
+  }
+  .agent-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .agent-text { font-size: 12px; color: var(--accent); font-weight: 500; line-height: 1.4; }
+  
+  /* ZONE 2: MAIN CONTENT */
+  #main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  #content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    padding: 24px;
+    gap: 24px;
+  }
+  
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-card);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 16px;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 0.5px solid var(--border);
+    background: var(--surface);
+    z-index: 10;
+  }
+  
+  /* LEFT COLUMN */
+  #col-left {
+    width: 200px;
+    flex-shrink: 0;
+  }
+  
+  .calendar-grid {
+    padding: 16px;
+  }
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px 0;
+  }
+  .cal-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    font-size: 12px;
+    position: relative;
+    border-radius: 4px;
+  }
+  .cal-day.other-month { opacity: 0.25; }
+  .cal-day.today { background: var(--accent); color: white; font-weight: 600; }
+  .cal-day .dot {
+    width: 4px; height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 2px;
+  }
+  .cal-day.today .dot { background: white; }
+  
+  /* RIGHT COLUMN */
+  #col-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+  
+  .list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .empty-state {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  
+  /* Item Cards */
+  .item-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-small);
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    transition: background 0.1s, border-color 0.1s;
+    cursor: pointer;
+    position: relative;
+  }
+  .item-card:hover {
+    background: rgba(0,0,0,0.02);
+    border-color: rgba(0,0,0,0.15);
+  }
+  
+  .event-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+  
+  .item-content { flex: 1; min-width: 0; }
+  .item-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .item-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  
+  .tag-pill {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+  
+  .task-checkbox {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: white;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .task-checkbox.checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .task-checkbox.checked::after {
+    content: '';
+    display: block;
+    width: 4px; height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-bottom: 2px;
+  }
+  
+  .item-card.done .item-title { text-decoration: line-through; color: var(--text-muted); font-weight: 500; }
+  
+  .delete-btn {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    opacity: 0;
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1;
+    transition: opacity 0.1s;
+  }
+  .item-card:hover .delete-btn { opacity: 1; }
+  .delete-btn:hover { color: #d00; }
+  
+  /* ZONE 3: INPUT BAR */
+  #input-bar {
+    height: 80px;
+    border-top: 0.5px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    gap: 16px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  #status-pill {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #status-pill.show { opacity: 1; }
+  
+  #input-area {
+    flex: 1;
+    height: 100%;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-small);
+    padding: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.1s;
+    background: var(--bg);
+  }
+  #input-area:focus { border-color: var(--accent); background: var(--surface); }
+  
+  #submit-btn {
+    height: 100%;
+    padding: 0 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-small);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  #submit-btn:hover { background: var(--accent-dark); }
+  #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+  <!-- ZONE 1 -->
+  <div id="sidebar">
+    <div class="app-brand"><span>S</span>chelude</div>
+    <div class="nav">
+      <div class="nav-item active">Planner</div>
+      <div class="nav-item">Upcoming</div>
+      <div class="nav-item">All Tasks</div>
+      <div class="nav-item">Focus Mode</div>
+    </div>
+    <div class="agent-status">
+      <div class="agent-label">Agent</div>
+      <div class="agent-text" id="agent-text">Ready</div>
+    </div>
+  </div>
+
+  <!-- ZONE 2 -->
+  <div id="main">
+    <div id="content">
+      <div id="col-left">
+        <div class="card" style="height: 100%;">
+          <div class="card-header">Calendar</div>
+          <div class="calendar-grid">
+            <div class="cal-weekdays">
+              <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+            </div>
+            <div class="cal-days" id="cal-days"></div>
+          </div>
+        </div>
+      </div>
+      <div id="col-right">
+        <div class="card" style="flex: 1;">
+          <div class="card-header">Events & Scheduled</div>
+          <div class="list-container" id="events-list"></div>
+        </div>
+        <div class="card" style="flex: 1;">
+          <div class="card-header">Tasks</div>
+          <div class="list-container" id="tasks-list"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ZONE 3 -->
+    <div id="input-bar">
+      <div id="status-pill"></div>
+      <textarea id="input-area" autocomplete="off" spellcheck="false" placeholder='Try: "Physics test Friday 10am" or "Finish APUSH essay by Thursday"'></textarea>
+      <button id="submit-btn">Add ↗</button>
+    </div>
+  </div>
+
+<script>
+const BACKEND_URL = "https://your-leapcell-backend.leapcell.app";
+const API_TOKEN = "your_api_token_here";
+
+const TAG_COLORS = {
+  test: { dot: '#D85A30', bg: '#FAECE7', text: '#993C1D' },
+  homework: { dot: '#534AB7', bg: '#EEEDFE', text: '#3C3489' },
+  school: { dot: '#185FA5', bg: '#E6F1FB', text: '#0C447C' },
+  extracurricular: { dot: '#0F6E56', bg: '#E1F5EE', text: '#085041' },
+  work: { dot: '#BA7517', bg: '#FAEEDA', text: '#854F0B' },
+  event: { dot: '#534AB7', bg: '#EEEDFE', text: '#3C3489' }
+};
+
+let events = [];
+let tasks = [];
+try {
+  events = JSON.parse(localStorage.getItem("schelude_events") || "[]");
+  tasks = JSON.parse(localStorage.getItem("schelude_tasks") || "[]");
+} catch (e) {
+  events = [];
+  tasks = [];
+}
+
+const ui = {
+  eventsList: document.getElementById('events-list'),
+  tasksList: document.getElementById('tasks-list'),
+  calDays: document.getElementById('cal-days'),
+  agentText: document.getElementById('agent-text'),
+  inputArea: document.getElementById('input-area'),
+  submitBtn: document.getElementById('submit-btn'),
+  statusPill: document.getElementById('status-pill')
+};
+
+let pillTimeout;
+
+function showPill(msg) {
+  ui.statusPill.textContent = msg;
+  ui.statusPill.classList.add('show');
+  clearTimeout(pillTimeout);
+  pillTimeout = setTimeout(() => {
+    ui.statusPill.classList.remove('show');
+  }, 3000);
+}
+
+function updateAgent(msg) {
+  ui.agentText.textContent = msg;
+}
+
+function saveState() {
+  try {
+    localStorage.setItem("schelude_events", JSON.stringify(events));
+    localStorage.setItem("schelude_tasks", JSON.stringify(tasks));
+  } catch (e) {}
+}
+
+function escapeHtml(unsafe) {
+  return String(unsafe || '')
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderEvents() {
+  if (events.length === 0) {
+    ui.eventsList.innerHTML = '<div class="empty-state">No events yet — type something below</div>';
+    return;
+  }
+  
+  ui.eventsList.innerHTML = '';
+  events.forEach((ev, i) => {
+    const tagObj = TAG_COLORS[ev.tag] || TAG_COLORS.event;
+    const dateStr = [ev.time, ev.day ? 'Day ' + ev.day : ''].filter(Boolean).join(', ');
+    
+    const div = document.createElement('div');
+    div.className = 'item-card';
+    div.innerHTML = `
+      <div class="event-dot" style="background: ${tagObj.dot}"></div>
+      <div class="item-content">
+        <div class="item-title">${escapeHtml(ev.title)}</div>
+        ${dateStr ? `<div class="item-meta">${escapeHtml(dateStr)}</div>` : ''}
+        <div class="tag-pill" style="background: ${tagObj.bg}; color: ${tagObj.text}">${escapeHtml(ev.tag || 'event')}</div>
+      </div>
+    `;
+    div.onclick = () => {
+      events.splice(i, 1);
+      saveState();
+      renderAll();
+      updateAgent("Removed event");
+    };
+    ui.eventsList.appendChild(div);
+  });
+}
+
+function renderTasks() {
+  if (tasks.length === 0) {
+    ui.tasksList.innerHTML = '<div class="empty-state">No tasks yet</div>';
+    return;
+  }
+  
+  ui.tasksList.innerHTML = '';
+  tasks.forEach((tk, i) => {
+    const div = document.createElement('div');
+    div.className = `item-card ${tk.done ? 'done' : ''}`;
+    
+    const dueDate = tk.due || '';
+    div.innerHTML = `
+      <div class="task-checkbox ${tk.done ? 'checked' : ''}"></div>
+      <div class="item-content">
+        <div class="item-title">${escapeHtml(tk.title)}</div>
+        ${dueDate ? `<div class="item-meta">${escapeHtml(dueDate)}</div>` : ''}
+      </div>
+      <div class="delete-btn" title="Delete task">×</div>
+    `;
+    
+    const checkbox = div.querySelector('.task-checkbox');
+    checkbox.onclick = (e) => {
+      e.stopPropagation();
+      tk.done = !tk.done;
+      saveState();
+      renderTasks();
+      updateAgent(tk.done ? "Marked task as done" : "Marked task as undone");
+    };
+    
+    const delBtn = div.querySelector('.delete-btn');
+    delBtn.onclick = (e) => {
+      e.stopPropagation();
+      tasks.splice(i, 1);
+      saveState();
+      renderTasks();
+      updateAgent("Removed task");
+    };
+    
+    ui.tasksList.appendChild(div);
+  });
+}
+
+function renderCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const todayDate = now.getDate();
+  
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+  
+  let html = '';
+  
+  // Extract event days roughly
+  const eventDays = new Set();
+  events.forEach(ev => {
+    if (ev.day) {
+      eventDays.add(parseInt(ev.day, 10));
+    } else if (ev.date) {
+      // Try to parse YYYY-MM-DD
+      const d = new Date(ev.date);
+      if (!isNaN(d.getTime()) && d.getMonth() === month && d.getFullYear() === year) {
+        eventDays.add(d.getDate());
+      } else {
+        // Just extract number if it exists
+        const match = String(ev.date).match(/\b(\d{1,2})\b/);
+        if (match) eventDays.add(parseInt(match[1], 10));
+      }
+    }
+  });
+
+  // Previous month trailing days
+  for (let i = firstDay - 1; i >= 0; i--) {
+    html += `<div class="cal-day other-month">${prevMonthDays - i}</div>`;
+  }
+  
+  // Current month days
+  for (let i = 1; i <= daysInMonth; i++) {
+    const isToday = i === todayDate ? 'today' : '';
+    const hasEvent = eventDays.has(i) ? '<div class="dot"></div>' : '';
+    html += `<div class="cal-day ${isToday}">${i}${hasEvent}</div>`;
+  }
+  
+  // Next month leading days (fill up to 42 cells)
+  const totalCells = firstDay + daysInMonth;
+  let nextDay = 1;
+  for (let i = totalCells; i < 42; i++) {
+    html += `<div class="cal-day other-month">${nextDay++}</div>`;
+  }
+  
+  ui.calDays.innerHTML = html;
+}
+
+function renderAll() {
+  renderEvents();
+  renderTasks();
+  renderCalendar();
+}
+
+async function submitInput() {
+  const val = ui.inputArea.value.trim();
+  if (!val) return;
+  
+  ui.inputArea.value = '';
+  ui.submitBtn.disabled = true;
+  showPill("Agent is parsing...");
+  updateAgent("Parsing input...");
+  
+  try {
+    const res = await fetch(BACKEND_URL + "/parse", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-token": API_TOKEN
+      },
+      body: JSON.stringify({ text: val })
+    });
+    
+    if (!res.ok) throw new Error("Backend error");
+    const data = await res.json();
+    
+    if (data.success) {
+      const type = data.data?.type;
+      const item = data.data;
+      
+      if (type === 'event') {
+        events.push(item);
+        updateAgent(`Added to calendar: ${item.title || 'event'}`);
+        showPill(`Added to calendar${item.day ? ' — Day ' + item.day : ''}`);
+      } else if (type === 'task') {
+        tasks.push(item);
+        updateAgent(`Added task: ${item.title || 'task'}`);
+        showPill(`Added to tasks`);
+      }
+      saveState();
+      renderAll();
+    } else {
+      throw new Error("Unsuccessful parse");
+    }
+    
+  } catch (err) {
+    showPill("Could not understand that — try again");
+    updateAgent("Ready");
+  }
+  
+  ui.submitBtn.disabled = false;
+  ui.inputArea.focus();
+}
+
+ui.submitBtn.onclick = submitInput;
+
+ui.inputArea.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    submitInput();
+  }
+});
+
+// Initial render
+renderAll();
+
+</script>
+</body>
+</html>
