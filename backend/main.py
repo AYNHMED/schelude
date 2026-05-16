@@ -148,7 +148,7 @@ async def parse(request: Request, body: ParseRequest):
     # 4. Groq call
     try:
         completion = await groq_client.chat.completions.create(
-            model="llama-3.2-3b-preview",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text},
