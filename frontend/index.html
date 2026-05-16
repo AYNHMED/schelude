@@ -361,8 +361,7 @@
 
 
 /* Boot Animation CSS */
-#boot-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.8s ease; }
-#boot-overlay.fade-out { opacity: 0; pointer-events: none; }
+#boot-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
 #boot-inner { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
 #boot-logo { display: flex; gap: 4px; font-size: 52px; font-weight: 900; letter-spacing: 12px; font-family: 'SF Mono', 'Fira Code', monospace; text-transform: uppercase; }
 .boot-char { opacity: 0; display: inline-block; color: #A855F7; text-shadow: 0 0 20px rgba(168,85,247,0.9), 0 0 40px rgba(168,85,247,0.6), 0 0 80px rgba(124,58,237,0.4); animation: bootCharIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: calc(var(--i) * 0.08s + 0.2s); transform: translateY(20px); }
@@ -637,15 +636,18 @@ button, .nav-item, .nav-dd-item, .nav-group-trigger, .nav-brand, .item-card, .ha
 
 <script>
 
-(function() {
+window.addEventListener('load', function() {
   const overlay = document.getElementById('boot-overlay');
-  setTimeout(() => {
-    overlay.classList.add('fade-out');
-    setTimeout(() => {
+  if (!overlay) return;
+  setTimeout(function() {
+    overlay.style.transition = 'opacity 0.8s ease';
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    setTimeout(function() {
       overlay.style.display = 'none';
-    }, 800);
+    }, 850);
   }, 2600);
-})();
+});
 
 const BACKEND_URL = "https://schelude-api.onrender.com";
 const API_TOKEN = "7JXRlYS9Kvj9N1oVhHV467uH5rRc0X6U";
