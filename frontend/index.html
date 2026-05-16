@@ -431,7 +431,7 @@ body { background: #03000A !important; }
 
 
 body { font-family: var(--font); background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; }
-#app { display: flex; flex-direction: column; height: 100vh; position: relative; z-index: 1; }
+#app { display: flex; flex-direction: column; height: 100vh; position: relative; z-index: 1; background: transparent; }
 #topnav { height: 60px; flex-shrink: 0; display: flex; align-items: center; padding: 0 32px; gap: 32px; background: rgba(3, 0, 10, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(168,85,247,0.15); position: relative; z-index: 100; box-shadow: 0 4px 32px rgba(0,0,0,0.4); }
 #topnav-left { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 #nav-brand { display: flex; align-items: center; font-weight: 900; font-size: 18px; letter-spacing: 3px; cursor: pointer; transition: opacity 0.2s; user-select: none; }
@@ -460,7 +460,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); heig
 #nav-settings-btn:hover { color: var(--accent); border-color: rgba(168,85,247,0.3); box-shadow: 0 0 12px rgba(168,85,247,0.15); }
 #search-btn { height: 36px; padding: 0 14px; background: rgba(168,85,247,0.06); color: var(--muted); border: 1px solid rgba(168,85,247,0.12); border-radius: var(--radius-sm); font-size: 12px; font-family: inherit; cursor: pointer; transition: all 0.2s; letter-spacing: 1px; }
 #search-btn:hover { border-color: rgba(168,85,247,0.3); color: var(--accent); box-shadow: 0 0 10px rgba(168,85,247,0.1); }
-#content-wrap { flex: 1; overflow: hidden; position: relative; }
+#content-wrap { flex: 1; overflow: hidden; position: relative; z-index: 1; }
 #content { position: absolute; inset: 0; display: flex; padding: 24px; gap: 24px; overflow: hidden; }
 #content.focus-mode { box-shadow: inset 0 0 30px var(--accent-glow); }
 #input-bar { height: 80px; border-top: 1px solid rgba(168,85,247,0.12); background: rgba(10, 6, 18, 0.9); backdrop-filter: blur(16px); display: flex; align-items: center; padding: 16px 32px; gap: 16px; position: relative; flex-shrink: 0; }
