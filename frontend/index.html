@@ -118,8 +118,8 @@
   .task-checkbox.checked::after { content: ''; display: block; width: 4px; height: 8px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px; }
   
   .item-card.done .item-title { text-decoration: line-through; color: var(--muted); }
-  .delete-btn { position: absolute; right: 8px; top: 8px; opacity: 0; color: var(--red); font-size: 12px; line-height: 1; transition: opacity 0.1s, filter 0.1s; cursor: pointer; font-weight: bold; z-index: 5; }
-  .item-card:hover .delete-btn { opacity: 1; }
+  .delete-btn { position: absolute; right: 10px; top: 10px; opacity: 0.28; color: var(--red); font-size: 16px; line-height: 1; transition: opacity 0.15s, transform 0.15s, background 0.15s; cursor: pointer; font-weight: bold; z-index: 5; padding: 2px 5px; border-radius: 4px; }
+  .item-card:hover .delete-btn { opacity: 1; transform: scale(1.12); background: rgba(247,90,90,0.12); }
   .delete-btn:hover { filter: brightness(1.3); }
 
   .task-section-header { font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; display: flex; align-items: center; gap: 8px; margin: 12px 0 4px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
@@ -532,6 +532,62 @@ button, .nav-item, .nav-dd-item, .nav-group-trigger, .nav-brand, .item-card, .ha
 .streak-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
 .streak-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
 
+.planner-tabs { display: flex; border-bottom: 1px solid var(--border); background: transparent; flex-shrink: 0; }
+.planner-tab { background: transparent; border: none; border-bottom: 2px solid transparent; padding: 10px 18px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.15s; margin-bottom: -1px; }
+.planner-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(168,85,247,0.05); }
+.planner-tab:hover:not(.active) { color: var(--text); }
+
+html.light-mode { --bg: #F5F1FF; --surface: #FFFFFF; --surface-2: #EDE8F8; --border: rgba(139,69,195,0.14); --border-bright: rgba(139,69,195,0.3); --text: #150825; --muted: #7B6A98; --accent-glow: rgba(139,69,195,0.15); }
+html.light-mode body { background: #F0EAFF !important; color: #150825; }
+html.light-mode #topnav { background: rgba(240,234,255,0.92) !important; border-bottom: 1px solid rgba(139,69,195,0.15) !important; box-shadow: 0 4px 24px rgba(0,0,0,0.08) !important; }
+html.light-mode .card { background: rgba(255,255,255,0.95) !important; border: 1px solid rgba(139,69,195,0.12) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8) !important; }
+html.light-mode .full-width-container { background: rgba(255,255,255,0.95) !important; border: 1px solid rgba(139,69,195,0.12) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; }
+html.light-mode .item-card { background: rgba(245,240,255,0.8) !important; border: 1px solid rgba(139,69,195,0.1) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important; }
+html.light-mode .item-card:hover { background: rgba(235,225,255,0.95) !important; border-color: rgba(139,69,195,0.3) !important; }
+html.light-mode .item-title { color: #150825 !important; }
+html.light-mode .item-meta { color: #7B6A98 !important; }
+html.light-mode .card-header { background: rgba(240,234,255,0.6) !important; color: #150825 !important; border-bottom: 1px solid rgba(139,69,195,0.12) !important; }
+html.light-mode #input-bar { background: rgba(240,234,255,0.95) !important; border-top: 1px solid rgba(139,69,195,0.15) !important; }
+html.light-mode #input-area { background: rgba(255,255,255,0.9) !important; border: 1px solid rgba(139,69,195,0.2) !important; color: #150825 !important; }
+html.light-mode .modal-card { background: rgba(255,255,255,0.98) !important; border: 1px solid rgba(139,69,195,0.25) !important; box-shadow: 0 24px 64px rgba(0,0,0,0.15) !important; }
+html.light-mode .modal-input, html.light-mode .modal-select { background: #F5F1FF !important; color: #150825 !important; border-color: rgba(139,69,195,0.2) !important; }
+html.light-mode .modal-label { color: #7B6A98 !important; }
+html.light-mode .settings-drawer { background: rgba(255,255,255,0.98) !important; border-left: 1px solid rgba(139,69,195,0.15) !important; }
+html.light-mode .settings-content { color: #150825; }
+html.light-mode .workspace-label { color: #150825; }
+html.light-mode .workspace-desc { color: #7B6A98 !important; }
+html.light-mode .toggle-row { background: rgba(240,234,255,0.6) !important; border-color: rgba(139,69,195,0.12) !important; color: #150825; }
+html.light-mode .search-card { background: rgba(255,255,255,0.98) !important; border: 1px solid rgba(139,69,195,0.2) !important; }
+html.light-mode .search-input { color: #150825 !important; }
+html.light-mode .search-result-item:hover { background: rgba(240,234,255,0.8) !important; }
+html.light-mode .search-result-title { color: #150825 !important; }
+html.light-mode .nav-dropdown { background: #F5F1FF !important; box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(139,69,195,0.12) !important; }
+html.light-mode .nav-dropdown::before { border-bottom-color: #F5F1FF !important; }
+html.light-mode .nav-dd-item { color: rgba(21,8,37,0.55) !important; }
+html.light-mode .nav-dd-item:hover { color: #150825 !important; }
+html.light-mode .cal-day { color: #150825 !important; }
+html.light-mode .cal-full-cell { background: rgba(255,255,255,0.85) !important; }
+html.light-mode .cal-full-cell:hover { background: rgba(235,225,255,0.9) !important; }
+html.light-mode .cal-full-weekdays { background: rgba(240,234,255,0.7) !important; }
+html.light-mode .cal-full-header { background: rgba(245,240,255,0.9) !important; }
+html.light-mode .habit-card { background: rgba(245,240,255,0.8) !important; border-color: rgba(139,69,195,0.12) !important; }
+html.light-mode .energy-widget, html.light-mode .pomodoro-widget { background: rgba(245,240,255,0.8) !important; border-color: rgba(139,69,195,0.12) !important; }
+html.light-mode .empty-state { color: #7B6A98 !important; }
+html.light-mode .task-section-header { color: #7B6A98 !important; border-bottom-color: rgba(139,69,195,0.15) !important; }
+html.light-mode .completed-section-header { color: #7B6A98 !important; }
+html.light-mode .streak-bar { background: rgba(139,69,195,0.08) !important; border-color: rgba(139,69,195,0.18) !important; }
+html.light-mode .planner-tab { color: #7B6A98 !important; }
+html.light-mode .planner-tab.active { color: var(--accent) !important; border-bottom-color: var(--accent) !important; background: rgba(139,69,195,0.06) !important; }
+html.light-mode #nav-agent { background: rgba(139,69,195,0.08) !important; border-color: rgba(139,69,195,0.15) !important; }
+html.light-mode .list-editor-row { background: rgba(240,234,255,0.6) !important; border-color: rgba(139,69,195,0.12) !important; color: #150825; }
+html.light-mode .block-type-bar { background: rgba(240,234,255,0.9) !important; border-top-color: rgba(139,69,195,0.12) !important; }
+html.light-mode .page-card { background: rgba(245,240,255,0.85) !important; border-color: rgba(139,69,195,0.12) !important; }
+html.light-mode .page-card-title { color: #150825 !important; }
+html.light-mode .home-view { color: #150825; }
+html.light-mode .home-title-line { color: #150825 !important; }
+html.light-mode .home-subtitle { color: #7B6A98 !important; }
+html.light-mode .home-stats { background: rgba(139,69,195,0.06) !important; border-color: rgba(139,69,195,0.18) !important; }
+html.light-mode .home-stat-label { color: #7B6A98 !important; }
 </style>
 </head>
 <body>
@@ -682,6 +738,8 @@ const API_TOKEN = "7JXRlYS9Kvj9N1oVhHV467uH5rRc0X6U";
 let googleConnected = false;
 let googleEvents = [];
 
+let themeMode = localStorage.getItem('schelude_theme') || 'dark';
+if (themeMode === 'light') document.documentElement.classList.add('light-mode');
 let accentColor = localStorage.getItem("schelude_accent") || "#A855F7";
 let fontStyle = localStorage.getItem("schelude_font") || "'SF Mono', 'Fira Code', 'Courier New', monospace";
 let density = localStorage.getItem("schelude_density") || "default";
@@ -778,7 +836,8 @@ function calcStreak(completions, frequency) {
 }
 
 function buildEventCard(ev, i, onRemove, onEdit) {
-  const tagObj = TAG_COLORS[ev.tag] || TAG_COLORS.event;
+  const evTagFirst = (Array.isArray(ev.tags) && ev.tags[0]) || ev.tag || 'event';
+  const tagObj = TAG_COLORS[evTagFirst] || TAG_COLORS.event;
   const dateParts = []; if (ev.time) dateParts.push(ev.time); if (ev.day) dateParts.push('Day ' + ev.day);
   const dateStr = dateParts.join(' • ');
   const titleLower = (ev.title || '').toLowerCase();
@@ -788,7 +847,9 @@ function buildEventCard(ev, i, onRemove, onEdit) {
   const div = document.createElement('div'); div.className = 'item-card'; div.style.borderLeftColor = tagObj.dot;
   div.onmouseenter = () => { div.style.boxShadow = `-4px 0 15px -5px ${tagObj.dot}`; }; div.onmouseleave = () => { div.style.boxShadow = 'none'; }; div.onclick = () => onEdit(i);
 
-  div.innerHTML = `<div class="item-content"><div class="item-header">${isPriority ? '<div class="priority-dot"></div>' : ''}<div class="item-title">${escapeHtml(ev.title)}</div><div class="tag-pill" style="background: ${tagObj.bg}; color: ${tagObj.text}; border-color: ${tagObj.border}">${escapeHtml(ev.tag || 'event')}</div></div>${(dateStr || locationStr) ? `<div class="item-meta">${escapeHtml(dateStr)}${locationStr}</div>` : ''}</div><div class="delete-btn" title="Delete">✕</div>`;
+  const evTags = Array.isArray(ev.tags) && ev.tags.length > 0 ? ev.tags : [ev.tag || 'event'];
+  const tagPillsHtml = evTags.map(tg => { const tObj = TAG_COLORS[tg] || TAG_COLORS.event; return `<div class="tag-pill" style="background: ${tObj.bg}; color: ${tObj.text}; border-color: ${tObj.border}">${escapeHtml(tg)}</div>`; }).join('');
+  div.innerHTML = `<div class="item-content"><div class="item-header">${isPriority ? '<div class="priority-dot"></div>' : ''}<div class="item-title">${escapeHtml(ev.title)}</div>${tagPillsHtml}</div>${(dateStr || locationStr) ? `<div class="item-meta">${escapeHtml(dateStr)}${locationStr}</div>` : ''}</div><div class="delete-btn" title="Delete">✕</div>`;
   const delBtn = div.querySelector('.delete-btn'); delBtn.onclick = (e) => { e.stopPropagation(); div.classList.add('deleting'); setTimeout(() => onRemove(i), 200); }; return div;
 }
 
@@ -1384,7 +1445,7 @@ function buildSettingsHTML() {
   if (!googleConnected) { googleHtml = `<button class="btn-primary" id="btn-google-connect">Connect Google Calendar</button><div style="font-size: 11px; color: var(--muted); margin-top: 8px;">Sync your Google Calendar events with Schelude. Connect once and your events appear automatically.</div>`; } 
   else { googleHtml = `<div style="display: flex; align-items: center; gap: 12px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green);"></div><span style="color: var(--green); font-weight: bold;">Connected to Google Calendar</span></div><div style="font-size: 11px; color: var(--muted); margin-top: 8px;">${googleEvents.length} events synced this month</div><div style="display: flex; gap: 8px; margin-top: 12px;"><button class="btn-primary" id="btn-google-refresh">Refresh Events</button><button class="btn-outline" id="btn-google-disconnect">Disconnect</button></div>`; }
 
-  return `<div class="workspace-section"><div class="workspace-header">GOOGLE CALENDAR</div>${googleHtml}</div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">APPEARANCE</div><div class="workspace-row"><div class="workspace-label">Accent Color</div><div class="color-swatches" id="accent-swatches"></div></div><div class="workspace-row"><div class="workspace-label">Font Style</div><div class="button-group" id="font-buttons"><button class="btn-toggle" data-font="mono">Mono</button><button class="btn-toggle" data-font="sans">Sans</button><button class="btn-toggle" data-font="serif">Serif</button></div></div><div class="workspace-row"><div class="workspace-label">Density</div><div class="button-group" id="density-buttons"><button class="btn-toggle" data-density="compact">Compact</button><button class="btn-toggle" data-density="default">Default</button><button class="btn-toggle" data-density="comfortable">Comfortable</button></div></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">WIDGETS</div><div class="workspace-desc">Show or hide sections in your planner view</div><div class="list-editor"><div class="toggle-row"><span>Calendar</span><label class="switch"><input type="checkbox" id="toggle-calendar" ${widgetSettings.calendar?'checked':''}><span class="slider"></span></label></div><div class="toggle-row"><span>Events & Scheduled</span><label class="switch"><input type="checkbox" id="toggle-events" ${widgetSettings.events?'checked':''}><span class="slider"></span></label></div><div class="toggle-row"><span>Tasks</span><label class="switch"><input type="checkbox" id="toggle-tasks" ${widgetSettings.tasks?'checked':''}><span class="slider"></span></label></div><div class="toggle-row"><span>Agent Status</span><label class="switch"><input type="checkbox" id="toggle-agent" ${widgetSettings.agent?'checked':''}><span class="slider"></span></label></div></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">CUSTOM TAGS</div><div class="workspace-desc">Create your own tags with custom colors</div><div class="list-editor" id="custom-tags-list"></div><div class="add-form"><input type="text" id="new-tag-name" placeholder="Tag name..." class="modal-input" style="flex:1;"><input type="color" id="new-tag-color" value="#A855F7" class="color-picker"><button class="btn-primary" id="btn-add-tag">Add</button></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">PROJECTS</div><div class="workspace-desc">Organize your tasks into projects</div><div class="list-editor" id="projects-list"></div><div class="add-form"><input type="text" id="new-project-name" placeholder="Project name..." class="modal-input" style="flex:1;"><div class="color-swatches" id="new-project-color"></div><button class="btn-primary" id="btn-add-project">Add</button></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">GOALS</div><div class="workspace-desc">Track long-term outcomes linked to your projects</div><div class="list-editor" id="goals-list"></div><div class="add-form" style="flex-wrap: wrap;"><input type="text" id="new-goal-title" placeholder="Goal title..." class="modal-input" style="flex:1;"><input type="text" id="new-goal-desc" placeholder="Description (optional)" class="modal-input" style="flex:1;"><input type="date" id="new-goal-date" class="modal-input" style="width:130px;"><select id="new-goal-proj" class="modal-select" style="width:120px;"></select><div class="color-swatches" id="new-goal-color"></div><button class="btn-primary" id="btn-add-goal">Add</button></div></div>`;
+  return `<div class="workspace-section"><div class="workspace-header">GOOGLE CALENDAR</div>${googleHtml}</div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">APPEARANCE</div><div class="workspace-row"><div class="workspace-label">Theme</div><div class="button-group" id="theme-buttons"><button class="btn-toggle" data-theme="dark">Dark</button><button class="btn-toggle" data-theme="light">Light</button></div></div><div class="workspace-row"><div class="workspace-label">Accent Color</div><div class="color-swatches" id="accent-swatches"></div></div><div class="workspace-row"><div class="workspace-label">Font Style</div><div class="button-group" id="font-buttons"><button class="btn-toggle" data-font="mono">Mono</button><button class="btn-toggle" data-font="sans">Sans</button><button class="btn-toggle" data-font="serif">Serif</button></div></div><div class="workspace-row"><div class="workspace-label">Density</div><div class="button-group" id="density-buttons"><button class="btn-toggle" data-density="compact">Compact</button><button class="btn-toggle" data-density="default">Default</button><button class="btn-toggle" data-density="comfortable">Comfortable</button></div></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">WIDGETS</div><div class="workspace-desc">Show or hide sections in your planner view</div><div class="list-editor"><div class="toggle-row"><span>Calendar</span><label class="switch"><input type="checkbox" id="toggle-calendar" ${widgetSettings.calendar?'checked':''}><span class="slider"></span></label></div><div class="toggle-row"><span>Events & Scheduled</span><label class="switch"><input type="checkbox" id="toggle-events" ${widgetSettings.events?'checked':''}><span class="slider"></span></label></div><div class="toggle-row"><span>Tasks</span><label class="switch"><input type="checkbox" id="toggle-tasks" ${widgetSettings.tasks?'checked':''}><span class="slider"></span></label></div><div class="toggle-row"><span>Agent Status</span><label class="switch"><input type="checkbox" id="toggle-agent" ${widgetSettings.agent?'checked':''}><span class="slider"></span></label></div></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">CUSTOM TAGS</div><div class="workspace-desc">Create your own tags with custom colors</div><div class="list-editor" id="custom-tags-list"></div><div class="add-form"><input type="text" id="new-tag-name" placeholder="Tag name..." class="modal-input" style="flex:1;"><input type="color" id="new-tag-color" value="#A855F7" class="color-picker"><button class="btn-primary" id="btn-add-tag">Add</button></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">PROJECTS</div><div class="workspace-desc">Organize your tasks into projects</div><div class="list-editor" id="projects-list"></div><div class="add-form"><input type="text" id="new-project-name" placeholder="Project name..." class="modal-input" style="flex:1;"><div class="color-swatches" id="new-project-color"></div><button class="btn-primary" id="btn-add-project">Add</button></div></div><div class="workspace-divider"></div><div class="workspace-section"><div class="workspace-header">GOALS</div><div class="workspace-desc">Track long-term outcomes linked to your projects</div><div class="list-editor" id="goals-list"></div><div class="add-form" style="flex-wrap: wrap;"><input type="text" id="new-goal-title" placeholder="Goal title..." class="modal-input" style="flex:1;"><input type="text" id="new-goal-desc" placeholder="Description (optional)" class="modal-input" style="flex:1;"><input type="date" id="new-goal-date" class="modal-input" style="width:130px;"><select id="new-goal-proj" class="modal-select" style="width:120px;"></select><div class="color-swatches" id="new-goal-color"></div><button class="btn-primary" id="btn-add-goal">Add</button></div></div>`;
 }
 
 function setupWorkspaceInteractions() {
@@ -1399,6 +1460,10 @@ function setupWorkspaceInteractions() {
     accentContainer.appendChild(sw);
   });
 
+  document.querySelectorAll('#theme-buttons .btn-toggle').forEach(btn => {
+    const t = btn.getAttribute('data-theme'); if (themeMode === t) btn.classList.add('active');
+    btn.onclick = () => { themeMode = t; localStorage.setItem('schelude_theme', t); document.documentElement.classList.toggle('light-mode', t === 'light'); document.querySelectorAll('#theme-buttons .btn-toggle').forEach(b => b.classList.remove('active')); btn.classList.add('active'); };
+  });
   document.querySelectorAll('#font-buttons .btn-toggle').forEach(btn => {
     const fontType = btn.getAttribute('data-font'); const fMap = { 'mono': "'SF Mono', 'Fira Code', 'Courier New', monospace", 'sans': "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", 'serif': "'Georgia', 'Times New Roman', serif" };
     if (fontStyle === fMap[fontType]) btn.classList.add('active');
@@ -1510,14 +1575,44 @@ function openEditTask(index) { editingType = 'task'; editingIndex = index; editi
 
 function openEditEvent(index) {
   editingType = 'event'; editingIndex = index; const ev = events[index];
-  let tagsOptions = ['test', 'homework', 'school', 'extracurricular', 'work', 'event'].map(t => `<option value="${t}" ${ev.tag === t ? 'selected' : ''}>${t}</option>`).join('');
-  customTags.forEach(ct => { tagsOptions += `<option value="${ct.name}" ${ev.tag === ct.name ? 'selected' : ''}>${escapeHtml(ct.name)}</option>`; });
-  
-  let syncBtnHtml = ''; if (googleConnected) { syncBtnHtml = `<button class="btn-outline" id="btn-sync-google" style="margin-top: 8px; width: 100%; border-color: #4285F4; color: #4285F4;">Sync to Google Calendar</button>`; }
+  const allTagKeys = [...Object.keys(TAG_COLORS), ...customTags.map(ct => ct.name).filter(n => !TAG_COLORS[n])];
+  const evTags = Array.isArray(ev.tags) && ev.tags.length > 0 ? ev.tags : (ev.tag ? [ev.tag] : ['event']);
+  const tagCheckboxes = allTagKeys.map(t => { const tObj = TAG_COLORS[t] || TAG_COLORS.event; return `<label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;padding:4px 8px;border-radius:6px;border:1px solid ${evTags.includes(t) ? tObj.border : 'var(--border)'};background:${evTags.includes(t) ? tObj.bg : 'transparent'};transition:all 0.1s;"><input type="checkbox" class="ev-tag-chk" value="${escapeHtml(t)}" ${evTags.includes(t) ? 'checked' : ''} style="display:none;"><span style="color:${tObj.text};font-size:11px;font-weight:bold;text-transform:uppercase;">${escapeHtml(t)}</span></label>`; }).join('');
+  const priorityMap = { urgent: 0, high: 1, medium: 2, normal: 3 };
+  const pCurrent = ev.priority || 'normal';
+  const pLabels = [['urgent','P1','#F75A5A'],['high','P2','#F5A524'],['medium','P3','#3B82F6'],['normal','P4','var(--muted)']];
+  const prioHtml = pLabels.map(([val,label,col]) => `<button class="ev-prio-btn ${pCurrent===val?'active':''}" data-prio="${val}" style="padding:5px 10px;border-radius:5px;border:1px solid ${pCurrent===val?col:'var(--border)'};background:${pCurrent===val?`rgba(${col==='#F75A5A'?'247,90,90':col==='#F5A524'?'245,165,36':col==='#3B82F6'?'59,130,246':'107,91,138'},0.15)`:'transparent'};color:${col};font-size:11px;font-weight:bold;cursor:pointer;font-family:inherit;transition:all 0.1s;">${label}</button>`).join('');
+  let syncBtnHtml = ''; if (googleConnected) syncBtnHtml = `<button class="btn-outline" id="btn-sync-google" style="width:100%;border-color:#4285F4;color:#4285F4;">Sync to Google Calendar</button>`;
   document.getElementById('edit-modal-header').textContent = 'Edit Event';
-  document.getElementById('edit-modal-body').innerHTML = `<div class="modal-field"><div class="modal-label">Title</div><input type="text" id="edit-event-title" class="modal-input" value="${escapeHtml(ev.title || '')}"></div><div class="modal-field"><div class="modal-label">Time</div><input type="text" id="edit-event-time" class="modal-input" value="${escapeHtml(ev.time || '')}"></div><div class="modal-field"><div class="modal-label">Day</div><input type="number" id="edit-event-day" class="modal-input" value="${ev.day || ''}"></div><div class="modal-field"><div class="modal-label">Tag</div><select id="edit-event-tag" class="modal-select">${tagsOptions}</select></div>${syncBtnHtml}`;
+  document.getElementById('edit-modal-body').innerHTML = `
+    <div class="modal-field"><div class="modal-label">Title</div><input type="text" id="edit-event-title" class="modal-input" value="${escapeHtml(ev.title || '')}"></div>
+    <div class="modal-field"><div class="modal-label">Description</div><textarea id="edit-event-desc" class="modal-input" style="height:60px;resize:none;">${escapeHtml(ev.description || '')}</textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="modal-field"><div class="modal-label">Day of Month</div><input type="number" id="edit-event-day" class="modal-input" min="1" max="31" value="${ev.day || ''}"></div>
+      <div class="modal-field"><div class="modal-label">Time</div><input type="text" id="edit-event-time" class="modal-input" placeholder="e.g. 3:00 PM" value="${escapeHtml(ev.time || '')}"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="modal-field"><div class="modal-label">Deadline</div><input type="date" id="edit-event-deadline" class="modal-input" value="${ev.deadline || ''}"></div>
+      <div class="modal-field"><div class="modal-label">Reminder (min before)</div><input type="number" id="edit-event-reminder" class="modal-input" min="0" placeholder="30" value="${ev.reminderMinutes != null ? ev.reminderMinutes : ''}"></div>
+    </div>
+    <div class="modal-field"><div class="modal-label">Location</div><input type="text" id="edit-event-location" class="modal-input" placeholder="Location..." value="${escapeHtml(ev.location || '')}"></div>
+    <div class="modal-field"><div class="modal-label">Priority</div><div style="display:flex;gap:6px;flex-wrap:wrap;" id="ev-prio-row">${prioHtml}</div></div>
+    <div class="modal-field"><div class="modal-label">Tags (select multiple)</div><div style="display:flex;flex-wrap:wrap;gap:6px;" id="ev-tags-row">${tagCheckboxes}</div></div>
+    ${syncBtnHtml}
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="btn-outline" id="btn-dup-event" style="flex:1;">Duplicate</button>
+      <button class="btn-outline" id="btn-del-event-modal" style="flex:1;border-color:var(--red);color:var(--red);">Delete</button>
+    </div>`;
+  document.querySelectorAll('.ev-prio-btn').forEach(btn => {
+    btn.onclick = () => { document.querySelectorAll('.ev-prio-btn').forEach(b => { const pv = b.getAttribute('data-prio'); const [,, c] = pLabels.find(x=>x[0]===pv)||[,,'var(--muted)']; b.style.borderColor='var(--border)'; b.style.background='transparent'; b.classList.remove('active'); }); btn.classList.add('active'); const pv=btn.getAttribute('data-prio'); const [,,c]=pLabels.find(x=>x[0]===pv)||[,,'var(--muted)']; btn.style.borderColor=c; btn.style.background=`${c}22`; };
+  });
+  document.querySelectorAll('.ev-tag-chk').forEach(chk => {
+    chk.parentElement.onclick = (e) => { e.preventDefault(); chk.checked = !chk.checked; const t=chk.value; const tObj=TAG_COLORS[t]||TAG_COLORS.event; if(chk.checked){chk.parentElement.style.borderColor=tObj.border;chk.parentElement.style.background=tObj.bg;}else{chk.parentElement.style.borderColor='var(--border)';chk.parentElement.style.background='transparent';} };
+  });
+  document.getElementById('btn-dup-event').onclick = () => { const copy = JSON.parse(JSON.stringify(events[editingIndex])); copy.title = copy.title + ' (copy)'; events.push(copy); saveState(); closeEditModal(); showPill('Event duplicated'); renderView(); };
+  document.getElementById('btn-del-event-modal').onclick = () => { events.splice(editingIndex, 1); saveState(); closeEditModal(); showPill('Event deleted'); renderView(); };
+  if (googleConnected) document.getElementById('btn-sync-google').onclick = () => syncEventToGoogle(ev);
   ui.editModalOverlay.classList.add('show');
-  if (googleConnected) { document.getElementById('btn-sync-google').onclick = () => syncEventToGoogle(ev); }
 }
 
 async function syncEventToGoogle(ev) {
