@@ -941,6 +941,7 @@ function updateTopNav() {
 }
 
 function renderView() {
+  const content = document.getElementById('content');
   if (currentView === "home") {
     content.innerHTML = "";
     content.style.padding = "0";
@@ -960,7 +961,7 @@ function renderView() {
   content.style.justifyContent = "";
 
    
-  const content = document.getElementById('content'); content.className = currentView === 'focus' ? 'focus-mode' : '';
+  content.className = currentView === 'focus' ? 'focus-mode' : '';
   
   if (currentView === 'planner') {
     let colLeftHtml = ''; if (widgetSettings.calendar) colLeftHtml = `<div id="col-left"><div class="card" style="height: 100%;"><div class="card-header">Calendar</div><div class="calendar-grid"><div class="cal-weekdays"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div><div class="cal-days" id="cal-days"></div></div></div></div>`;
