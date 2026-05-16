@@ -134,7 +134,8 @@
   #status-pill.show { animation: pillPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
   #input-area { flex: 1; height: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; font-family: inherit; font-size: 13px; resize: none; outline: none; transition: all 0.1s; background: var(--surface-2); color: var(--text); }
   #input-area:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
-  #ai-badge { font-size: 9px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; padding: 5px 10px; border: 1px solid rgba(168,85,247,0.3); border-radius: 20px; background: rgba(168,85,247,0.07); white-space: nowrap; font-weight: 700; flex-shrink: 0; }
+  #ai-badge { font-size: 9px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; padding: 6px 12px; border: 1px solid rgba(168,85,247,0.3); border-radius: 10px; background: rgba(168,85,247,0.07); white-space: nowrap; font-weight: 700; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; line-height: 1.3; }
+  #ai-badge-author { font-size: 8px; letter-spacing: 1.5px; color: #D946EF; text-shadow: 0 0 8px rgba(217,70,239,0.7), 0 0 20px rgba(217,70,239,0.35); font-weight: 700; text-transform: uppercase; }
   #submit-btn { height: 100%; padding: 0 20px; background: var(--accent); color: var(--text); border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: bold; font-family: inherit; cursor: pointer; transition: all 0.1s; }
   #submit-btn:hover { background: var(--accent-2); box-shadow: 0 0 15px var(--accent-glow); }
   #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
@@ -374,7 +375,7 @@
 #boot-line { width: 0; height: 1px; background: linear-gradient(90deg, transparent, #A855F7, #06B6D4, transparent); opacity: 0; animation: bootLineExpand 0.6s ease forwards; animation-delay: 0.85s; margin: 4px 0; }
 @keyframes bootLineExpand { from { width: 0; opacity: 0; } to { width: 320px; opacity: 1; } }
 #boot-sub { font-size: 11px; letter-spacing: 10px; text-transform: uppercase; color: rgba(192,132,252,0.85); font-family: 'SF Mono', monospace; opacity: 0; animation: bootFadeSlide 0.6s ease forwards; animation-delay: 1.05s; }
-#boot-author { font-size: 11px; letter-spacing: 5px; color: rgba(240,230,255,0.5); font-family: 'SF Mono', monospace; opacity: 0; animation: bootFadeSlide 0.6s ease forwards; animation-delay: 1.25s; }
+#boot-author { font-size: 11px; letter-spacing: 5px; color: #D946EF; text-shadow: 0 0 10px rgba(217,70,239,0.65), 0 0 24px rgba(217,70,239,0.3); font-family: 'SF Mono', monospace; opacity: 0; animation: bootFadeSlide 0.6s ease forwards; animation-delay: 1.25s; }
 @keyframes bootFadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 #boot-sys { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; opacity: 0; animation: bootFadeSlide 0.4s ease forwards; animation-delay: 1.5s; }
 .boot-sys-line { font-size: 9px; letter-spacing: 2px; color: rgba(6,182,212,0.55); font-family: 'SF Mono', monospace; text-align: left; opacity: 0; animation: bootSysIn 0.35s ease forwards; animation-delay: calc(var(--si)*0.22s + 1.65s); }
@@ -482,13 +483,15 @@ body { font-family: var(--font); background: #000; color: var(--text); height: 1
 .home-title { display: flex; flex-direction: column; gap: 0; line-height: 1.1; }
 .home-title-line { font-size: 80px; font-weight: 900; letter-spacing: -3px; color: var(--text); display: block; line-height: 1; }
 .home-title-accent { font-size: 80px; font-weight: 900; letter-spacing: -3px; background: linear-gradient(135deg, #A855F7, #C084FC, #7C3AED); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; line-height: 1; filter: drop-shadow(0 0 30px rgba(168,85,247,0.5)); }
-.home-subtitle { font-size: 19px; color: var(--muted); letter-spacing: 0.5px; line-height: 1.6; max-width: 480px; }
+.home-welcome { font-size: 38px; font-weight: 900; letter-spacing: -1px; line-height: 1.15; background: linear-gradient(135deg, #F0E6FF 0%, #C084FC 50%, #A855F7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 28px rgba(168,85,247,0.65)) drop-shadow(0 0 60px rgba(124,58,237,0.35)); animation: welcomePop 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+@keyframes welcomePop { from { opacity:0; transform: scale(0.82) translateY(18px); filter: drop-shadow(0 0 0px rgba(168,85,247,0)); } to { opacity:1; transform: scale(1) translateY(0); filter: drop-shadow(0 0 28px rgba(168,85,247,0.65)) drop-shadow(0 0 60px rgba(124,58,237,0.35)); } }
+.home-subtitle { font-size: 15px; color: var(--muted); letter-spacing: 0.5px; line-height: 1.6; max-width: 480px; }
 .home-cta-row { display: flex; gap: 16px; align-items: center; }
 .home-cta { padding: 16px 40px; background: linear-gradient(135deg, #7C3AED, #A855F7); color: white; border: none; border-radius: var(--radius); font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 40px rgba(168,85,247,0.5), 0 0 80px rgba(124,58,237,0.2); text-transform: uppercase; }
 .home-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 60px rgba(168,85,247,0.7), 0 0 120px rgba(124,58,237,0.3); }
 .home-cta:active { transform: translateY(0); }
-.home-cta-outline { padding: 14px 32px; background: transparent; color: var(--muted); border: 1px solid rgba(168,85,247,0.25); border-radius: var(--radius); font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-.home-cta-outline:hover { color: var(--text); border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.06); transform: translateY(-1px); }
+.home-cta-outline { padding: 16px 40px; background: linear-gradient(135deg, #7C3AED, #A855F7); color: white; border: none; border-radius: var(--radius); font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 40px rgba(168,85,247,0.5), 0 0 80px rgba(124,58,237,0.2); text-transform: uppercase; }
+.home-cta-outline:hover { transform: translateY(-3px); box-shadow: 0 12px 60px rgba(168,85,247,0.7), 0 0 120px rgba(124,58,237,0.3); }
 .home-stats { display: flex; align-items: center; gap: 32px; padding: 20px 40px; background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.2); border-radius: var(--radius); backdrop-filter: blur(20px); box-shadow: 0 0 40px rgba(168,85,247,0.1); }
 .home-stat { text-align: center; }
 .home-stat-num { font-size: 32px; font-weight: 900; color: var(--accent); text-shadow: 0 0 24px rgba(168,85,247,0.55), 0 0 48px rgba(168,85,247,0.2); letter-spacing: -1px; }
@@ -500,8 +503,7 @@ body { font-family: var(--font); background: #000; color: var(--text); height: 1
 @keyframes pageEnterRight { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: translateX(0); } }
 
 /* Reactive Interactions */
-.home-cta:active { transform: scale(0.98) !important; }
-.home-cta-outline:active { transform: scale(0.98) !important; }
+.home-cta:active, .home-cta-outline:active { transform: scale(0.98) !important; }
 .nav-dd-item:active { transform: translateX(4px); }
 .nav-group-trigger:active { transform: scale(0.97); }
 .item-card:active { transform: scale(0.99) !important; }
@@ -602,6 +604,7 @@ html.light-mode .home-stat-label { color: #7B6A98 !important; }
     </div>
     <div id="boot-line"></div>
     <div id="boot-sub">INTELLIGENT PLANNING</div>
+    <div id="boot-author">by Aayan Ahmed</div>
     <div id="boot-sys">
       <div class="boot-sys-line" style="--si:0">INITIALIZING CORE</div>
       <div class="boot-sys-line" style="--si:1">LOADING MODULES</div>
@@ -674,7 +677,7 @@ html.light-mode .home-stat-label { color: #7B6A98 !important; }
 
   <div id="input-bar">
     <div id="status-pill"></div>
-    <div id="ai-badge">AI-POWERED PLANNER</div>
+    <div id="ai-badge">AI-POWERED PLANNER<span id="ai-badge-author">developed by Aayan Ahmed</span></div>
     <textarea id="input-area" autocomplete="off" spellcheck="false"
       placeholder="Type what you got going on..."></textarea>
     <button id="submit-btn">→ RUN</button>
@@ -1052,45 +1055,55 @@ function startHomeAnimation(wrap) {
   canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;';
   wrap.appendChild(canvas);
   const ctx = canvas.getContext('2d');
-  let CW, CH;
-  function sz() { CW = canvas.width = wrap.offsetWidth || window.innerWidth; CH = canvas.height = wrap.offsetHeight || window.innerHeight; }
+  let CW, CH, RX, RY;
+  const RZ = 380, FOV = 900;
+  function sz() {
+    CW = canvas.width = wrap.offsetWidth || window.innerWidth;
+    CH = canvas.height = wrap.offsetHeight || window.innerHeight;
+    RX = CW * 0.58; RY = CH * 0.58;
+  }
   sz();
   const ro = new ResizeObserver(sz); ro.observe(wrap);
 
   const COLS = [[168,85,247],[124,58,237],[192,132,252],[6,182,212],[236,72,153],[139,92,246]];
-  const N = 130, RANGE = 420, FOV = 520, LINK = 130, SPD = 3.2;
+  const N = 160, SPD = 3.0;
   function col(ci,a){const[r,g,b]=COLS[ci];return `rgba(${r},${g},${b},${Math.min(1,a).toFixed(3)})`;}
 
-  function mkP(){return{x:(Math.random()-.5)*RANGE*2,y:(Math.random()-.5)*RANGE*2,z:(Math.random()-.5)*RANGE*2,vx:(Math.random()-.5)*SPD,vy:(Math.random()-.5)*SPD,vz:(Math.random()-.5)*SPD,ci:Math.floor(Math.random()*COLS.length),r:1+Math.random()*2.2,ph:Math.random()*Math.PI*2};}
+  function mkP(){return{x:(Math.random()-.5)*RX*2,y:(Math.random()-.5)*RY*2,z:(Math.random()-.5)*RZ*2,vx:(Math.random()-.5)*SPD,vy:(Math.random()-.5)*SPD,vz:(Math.random()-.5)*SPD,ci:Math.floor(Math.random()*COLS.length),r:1.2+Math.random()*2.4,ph:Math.random()*Math.PI*2};}
   const pts = Array.from({length:N},mkP);
   let f=0, animId, rotY=0, rotX=0;
 
   function proj(x,y,z){
-    const cy=Math.cos(rotY),sy=Math.sin(rotY);
-    const rx=x*cy-z*sy, rz=x*sy+z*cy;
-    const cx2=Math.cos(rotX),sx2=Math.sin(rotX);
-    const ry=y*cx2-rz*sx2, rz2=y*sx2+rz*cx2;
-    const w=FOV/(FOV+rz2+RANGE);
+    const cosY=Math.cos(rotY),sinY=Math.sin(rotY);
+    const rx=x*cosY-z*sinY, rz=x*sinY+z*cosY;
+    const cosX=Math.cos(rotX),sinX=Math.sin(rotX);
+    const ry=y*cosX-rz*sinX, rz2=y*sinX+rz*cosX;
+    const w=FOV/(FOV+rz2+RZ);
     return{sx:CW/2+rx*w,sy:CH/2+ry*w,w,dz:rz2};
   }
+
+  // Link distance scales with screen so connections span the whole view
+  function getLinkDist(){ return Math.min(RX,RY)*0.38; }
 
   function draw(){
     animId=requestAnimationFrame(draw);
     f++;
-    ctx.fillStyle='rgba(3,0,10,0.18)';
+    ctx.fillStyle='rgba(3,0,10,0.17)';
     ctx.fillRect(0,0,CW,CH);
 
-    rotY+=0.0042;
-    rotX=Math.sin(f*0.0031)*0.28;
+    rotY+=0.0038;
+    rotX=Math.sin(f*0.0028)*0.22;
 
+    // Resize-aware bounds
     pts.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.z+=p.vz; p.ph+=0.038;
-      if(Math.abs(p.x)>RANGE)p.vx*=-1;
-      if(Math.abs(p.y)>RANGE)p.vy*=-1;
-      if(Math.abs(p.z)>RANGE)p.vz*=-1;
+      p.x+=p.vx; p.y+=p.vy; p.z+=p.vz; p.ph+=0.036;
+      if(Math.abs(p.x)>RX)p.vx*=-1;
+      if(Math.abs(p.y)>RY)p.vy*=-1;
+      if(Math.abs(p.z)>RZ)p.vz*=-1;
     });
 
-    const pr=pts.map(p=>({...proj(p.x,p.y,p.z),ci:p.ci,r:p.r,ph:p.ph,p}));
+    const pr=pts.map(p=>({...proj(p.x,p.y,p.z),ci:p.ci,r:p.r,ph:p.ph}));
+    const LD=getLinkDist();
 
     // Draw links
     for(let a=0;a<N;a++){
@@ -1098,38 +1111,32 @@ function startHomeAnimation(wrap) {
         const pa=pts[a],pb=pts[b];
         const dx=pa.x-pb.x,dy=pa.y-pb.y,dz=pa.z-pb.z;
         const d=Math.sqrt(dx*dx+dy*dy+dz*dz);
-        if(d<LINK){
-          const al=(1-d/LINK)*0.4;
+        if(d<LD){
+          const al=(1-d/LD)*0.38;
           const pa2=pr[a],pb2=pr[b];
           const g=ctx.createLinearGradient(pa2.sx,pa2.sy,pb2.sx,pb2.sy);
           g.addColorStop(0,col(pts[a].ci,al));
           g.addColorStop(1,col(pts[b].ci,al));
           ctx.beginPath();ctx.moveTo(pa2.sx,pa2.sy);ctx.lineTo(pb2.sx,pb2.sy);
-          ctx.strokeStyle=g;ctx.lineWidth=Math.max(0.15,al*1.8*(pa2.w+pb2.w));ctx.stroke();
+          ctx.strokeStyle=g;ctx.lineWidth=Math.max(0.15,al*1.6*(pa2.w+pb2.w));ctx.stroke();
         }
       }
     }
 
     // Draw particles back-to-front
     pr.slice().sort((a,b)=>a.dz-b.dz).forEach(({sx,sy,w,ci,r,ph})=>{
-      const bright=0.65+Math.sin(ph)*0.35;
-      const rad=r*w*4.5*bright;
+      const bright=0.6+Math.sin(ph)*0.4;
+      const rad=r*w*5*bright;
       if(rad<0.3)return;
-      const grd=ctx.createRadialGradient(sx,sy,0,sx,sy,rad*3.5);
-      grd.addColorStop(0,col(ci,0.75*bright));
-      grd.addColorStop(0.3,col(ci,0.28*bright));
+      const grd=ctx.createRadialGradient(sx,sy,0,sx,sy,rad*3.8);
+      grd.addColorStop(0,col(ci,0.8*bright));
+      grd.addColorStop(0.3,col(ci,0.25*bright));
       grd.addColorStop(1,col(ci,0));
       ctx.fillStyle=grd;
-      ctx.beginPath();ctx.arc(sx,sy,rad*3.5,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(sx,sy,rad*3.8,0,Math.PI*2);ctx.fill();
       ctx.fillStyle=col(ci,1);
-      ctx.beginPath();ctx.arc(sx,sy,rad*0.5,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(sx,sy,rad*0.45,0,Math.PI*2);ctx.fill();
     });
-
-    // Central ambient glow
-    const gc=ctx.createRadialGradient(CW/2,CH/2,0,CW/2,CH/2,180);
-    gc.addColorStop(0,'rgba(168,85,247,0.09)');
-    gc.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=gc;ctx.beginPath();ctx.arc(CW/2,CH/2,180,0,Math.PI*2);ctx.fill();
   }
 
   draw();
@@ -1183,7 +1190,9 @@ function renderView() {
     const home = document.createElement("div");
     home.className = "home-view";
     const doneCt = tasks.filter(t=>t.done).length;
-    home.innerHTML = `<div class="home-subtitle">Type what you got going on. Schelude handles the rest.</div><div class="home-cta-row"><button class="home-cta" id="home-launch">Launch Planner</button><button class="home-cta-outline" id="home-tasks">View Tasks</button></div><div class="home-stats"><div class="home-stat"><div class="home-stat-num">${events.length}</div><div class="home-stat-label">Events</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${tasks.filter(t=>!t.done).length}</div><div class="home-stat-label">Active</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${doneCt}</div><div class="home-stat-label">Completed</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${productivityStreak.streak}</div><div class="home-stat-label">Day Streak</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${habits.length}</div><div class="home-stat-label">Habits</div></div></div>`;
+    const welcomePhrases = ["Welcome back.","Ready to plan?","Let's get to work.","What's on your mind?","Make today count.","Own your schedule.","Where do we start?","Good to see you."];
+    const welcome = welcomePhrases[Math.floor(Math.random()*welcomePhrases.length)];
+    home.innerHTML = `<div class="home-welcome">${welcome}</div><div class="home-cta-row"><button class="home-cta" id="home-launch">Launch Planner</button><button class="home-cta-outline" id="home-tasks">View Tasks</button></div><div class="home-stats"><div class="home-stat"><div class="home-stat-num">${events.length}</div><div class="home-stat-label">Events</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${tasks.filter(t=>!t.done).length}</div><div class="home-stat-label">Active</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${doneCt}</div><div class="home-stat-label">Completed</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${productivityStreak.streak}</div><div class="home-stat-label">Day Streak</div></div><div class="home-stat-divider"></div><div class="home-stat"><div class="home-stat-num">${habits.length}</div><div class="home-stat-label">Habits</div></div></div>`;
     content.appendChild(home);
     document.getElementById("home-launch").onclick = () => navigateTo("planner");
     document.getElementById("home-tasks").onclick = () => navigateTo("tasks");
