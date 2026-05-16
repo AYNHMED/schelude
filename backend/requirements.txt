@@ -4,3 +4,6 @@ groq
 python-dotenv
 httpx
 pydantic
+google-auth
+google-auth-oauthlib
+google-api-python-client
