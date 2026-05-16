@@ -361,7 +361,8 @@
 
 
 /* Boot Animation CSS */
-#boot-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+#boot-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; animation: bootOverlayDismiss 0.8s ease 2.8s forwards; }
+@keyframes bootOverlayDismiss { from { opacity: 1; } to { opacity: 0; visibility: hidden; pointer-events: none; } }
 #boot-inner { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
 #boot-logo { display: flex; gap: 4px; font-size: 52px; font-weight: 900; letter-spacing: 12px; font-family: 'SF Mono', 'Fira Code', monospace; text-transform: uppercase; }
 .boot-char { opacity: 0; display: inline-block; color: #A855F7; text-shadow: 0 0 20px rgba(168,85,247,0.9), 0 0 40px rgba(168,85,247,0.6), 0 0 80px rgba(124,58,237,0.4); animation: bootCharIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: calc(var(--i) * 0.08s + 0.2s); transform: translateY(20px); }
@@ -636,18 +637,14 @@ button, .nav-item, .nav-dd-item, .nav-group-trigger, .nav-brand, .item-card, .ha
 
 <script>
 
-window.addEventListener('load', function() {
-  const overlay = document.getElementById('boot-overlay');
-  if (!overlay) return;
-  setTimeout(function() {
-    overlay.style.transition = 'opacity 0.8s ease';
-    overlay.style.opacity = '0';
-    overlay.style.pointerEvents = 'none';
-    setTimeout(function() {
-      overlay.style.display = 'none';
-    }, 850);
-  }, 2600);
-});
+setTimeout(function() {
+  var o = document.getElementById('boot-overlay');
+  if (o) { o.style.opacity = '0'; o.style.pointerEvents = 'none'; o.style.transition = 'opacity 0.8s'; }
+}, 2800);
+setTimeout(function() {
+  var o = document.getElementById('boot-overlay');
+  if (o) o.style.display = 'none';
+}, 3700);
 
 const BACKEND_URL = "https://schelude-api.onrender.com";
 const API_TOKEN = "7JXRlYS9Kvj9N1oVhHV467uH5rRc0X6U";
