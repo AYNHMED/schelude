@@ -39,28 +39,14 @@
     font-size: 13px;
   }
   
-  #sidebar {
-    width: 220px;
-    flex-shrink: 0;
-    background: var(--bg);
-    border-right: 1px solid;
-    border-image: linear-gradient(to bottom, var(--border-bright), transparent) 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  
+  #sidebar { width: 220px; flex-shrink: 0; background: var(--bg); border-right: 1px solid; border-image: linear-gradient(to bottom, var(--border-bright), transparent) 1; display: flex; flex-direction: column; height: 100%; }
   .app-brand { padding: 24px 20px 8px; font-weight: 700; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; }
   .app-brand span { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
   .app-version { padding: 0 20px 24px; font-size: 10px; color: var(--muted); }
   
   .nav-container { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
   .nav { display: flex; flex-direction: column; padding: 0 12px; gap: 4px; }
-  .nav-item {
-    padding: 10px 12px; border-radius: var(--radius-sm); color: var(--muted); cursor: pointer;
-    font-weight: bold; transition: all 0.1s; display: flex; align-items: center; gap: 8px;
-    text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;
-  }
+  .nav-item { padding: 10px 12px; border-radius: var(--radius-sm); color: var(--muted); cursor: pointer; font-weight: bold; transition: all 0.1s; display: flex; align-items: center; gap: 8px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
   .nav-item::before { content: '>'; color: transparent; font-weight: bold; transition: color 0.1s; }
   .nav-item:hover { background: var(--surface-2); color: var(--text); }
   .nav-item.active { color: var(--accent); border-bottom: 1px solid var(--accent); border-radius: 0; padding-bottom: 9px; }
@@ -92,7 +78,8 @@
   .cal-day:hover { background: var(--surface-2); box-shadow: 0 0 8px var(--accent-glow); }
   .cal-day.other-month { opacity: 0.3; pointer-events: none; }
   .cal-day.today { box-shadow: inset 0 0 0 1px var(--accent), 0 0 10px var(--accent-glow); color: var(--accent); font-weight: bold; }
-  .cal-day .dot { width: 4px; height: 4px; border-radius: 50%; position: absolute; bottom: 4px; box-shadow: 0 0 4px currentColor; }
+  .cal-day .dots-wrap { position: absolute; bottom: 4px; display: flex; gap: 3px; justify-content: center; width: 100%; }
+  .cal-day .dot { width: 4px; height: 4px; border-radius: 50%; box-shadow: 0 0 4px currentColor; }
   
   #col-right { flex: 1; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
   
@@ -120,7 +107,6 @@
   .task-checkbox.checked::after { content: ''; display: block; width: 4px; height: 8px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px; }
   
   .item-card.done .item-title { text-decoration: line-through; color: var(--muted); }
-  
   .delete-btn { position: absolute; right: 8px; top: 8px; opacity: 0; color: var(--red); font-size: 12px; line-height: 1; transition: opacity 0.1s, filter 0.1s; cursor: pointer; font-weight: bold; z-index: 5; }
   .item-card:hover .delete-btn { opacity: 1; }
   .delete-btn:hover { filter: brightness(1.3); }
@@ -133,13 +119,10 @@
   .task-progress-fill { height: 100%; background: var(--accent); transition: width 0.2s; box-shadow: 0 0 4px var(--accent-glow); }
   
   #input-bar { height: 80px; border-top: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; padding: 16px 24px; gap: 16px; position: relative; flex-shrink: 0; }
-  
   #status-pill { position: absolute; top: -32px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--text); padding: 4px 12px; border-radius: var(--radius); font-size: 11px; font-weight: bold; text-transform: uppercase; box-shadow: 0 0 10px var(--accent-glow); opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap; }
   #status-pill.show { opacity: 1; }
-  
   #input-area { flex: 1; height: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; font-family: inherit; font-size: 13px; resize: none; outline: none; transition: all 0.1s; background: var(--surface-2); color: var(--text); }
   #input-area:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
-  
   #submit-btn { height: 100%; padding: 0 20px; background: var(--accent); color: var(--text); border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: bold; font-family: inherit; cursor: pointer; transition: all 0.1s; }
   #submit-btn:hover { background: var(--accent-2); box-shadow: 0 0 15px var(--accent-glow); }
   #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
@@ -197,7 +180,6 @@
   .add-form { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
   .color-picker { width: 32px; height: 32px; padding: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; background: transparent; }
 
-  /* New Feature CSS */
   .habit-card { background: var(--surface-2); border: 1px solid var(--border); border-left: 2px solid var(--border); border-radius: var(--radius-sm); padding: var(--card-padding); display: flex; align-items: center; gap: 16px; margin-bottom: var(--card-gap); position: relative; }
   .habit-days { display: flex; gap: 6px; }
   .habit-day-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: 1px solid var(--border-bright); }
@@ -329,50 +311,33 @@
 const BACKEND_URL = "https://schelude-api.onrender.com";
 const API_TOKEN = "7JXRlYS9Kvj9N1oVhHV467uH5rRc0X6U";
 
+let googleConnected = false;
+let googleEvents = [];
+
 let accentColor = localStorage.getItem("schelude_accent") || "#4F8EF7";
 let fontStyle = localStorage.getItem("schelude_font") || "'SF Mono', 'Fira Code', 'Courier New', monospace";
 let density = localStorage.getItem("schelude_density") || "default";
 
 let widgetSettings = { calendar: true, events: true, tasks: true, agent: true };
-try {
-  const ws = localStorage.getItem("schelude_widgets");
-  if (ws) widgetSettings = JSON.parse(ws);
-} catch (e) {}
+try { const ws = localStorage.getItem("schelude_widgets"); if (ws) widgetSettings = JSON.parse(ws); } catch (e) {}
 
 let customTags = [];
-try {
-  const ct = localStorage.getItem("schelude_custom_tags");
-  if (ct) customTags = JSON.parse(ct);
-} catch (e) {}
+try { const ct = localStorage.getItem("schelude_custom_tags"); if (ct) customTags = JSON.parse(ct); } catch (e) {}
 
 let projects = [{ id: "inbox", name: "Inbox", color: "#5A7090" }];
-try {
-  const ps = localStorage.getItem("schelude_projects");
-  if (ps) {
-    const parsed = JSON.parse(ps);
-    if (parsed.length > 0) projects = parsed;
-  }
-} catch (e) {}
+try { const ps = localStorage.getItem("schelude_projects"); if (ps) { const parsed = JSON.parse(ps); if (parsed.length > 0) projects = parsed; } } catch (e) {}
 
 let habits = [];
-try {
-  const h = localStorage.getItem("schelude_habits");
-  if (h) habits = JSON.parse(h);
-} catch (e) {}
+try { const h = localStorage.getItem("schelude_habits"); if (h) habits = JSON.parse(h); } catch (e) {}
 
 let goals = [];
-try {
-  const g = localStorage.getItem("schelude_goals");
-  if (g) goals = JSON.parse(g);
-} catch (e) {}
+try { const g = localStorage.getItem("schelude_goals"); if (g) goals = JSON.parse(g); } catch (e) {}
 
 function saveHabits() { try { localStorage.setItem("schelude_habits", JSON.stringify(habits)); } catch(e) {} }
 function saveGoals() { try { localStorage.setItem("schelude_goals", JSON.stringify(goals)); } catch(e) {} }
 
 function hexToRgba(hex, alpha) {
-  let r = parseInt(hex.slice(1, 3), 16),
-      g = parseInt(hex.slice(3, 5), 16),
-      b = parseInt(hex.slice(5, 7), 16);
+  let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
@@ -380,16 +345,9 @@ document.documentElement.style.setProperty('--accent', accentColor);
 document.documentElement.style.setProperty('--accent-glow', hexToRgba(accentColor, 0.15));
 document.body.style.fontFamily = fontStyle;
 
-if (density === 'compact') {
-  document.documentElement.style.setProperty('--card-padding', '8px');
-  document.documentElement.style.setProperty('--card-gap', '6px');
-} else if (density === 'comfortable') {
-  document.documentElement.style.setProperty('--card-padding', '20px');
-  document.documentElement.style.setProperty('--card-gap', '16px');
-} else {
-  document.documentElement.style.setProperty('--card-padding', '14px');
-  document.documentElement.style.setProperty('--card-gap', '12px');
-}
+if (density === 'compact') { document.documentElement.style.setProperty('--card-padding', '8px'); document.documentElement.style.setProperty('--card-gap', '6px'); } 
+else if (density === 'comfortable') { document.documentElement.style.setProperty('--card-padding', '20px'); document.documentElement.style.setProperty('--card-gap', '16px'); } 
+else { document.documentElement.style.setProperty('--card-padding', '14px'); document.documentElement.style.setProperty('--card-gap', '12px'); }
 
 const TAG_COLORS = {
   test:            { dot: '#F75A5A', bg: 'rgba(247,90,90,0.1)',  text: '#F75A5A', border: 'rgba(247,90,90,0.3)' },
@@ -399,127 +357,58 @@ const TAG_COLORS = {
   work:            { dot: '#F5A524', bg: 'rgba(245,165,36,0.1)', text: '#F5A524', border: 'rgba(245,165,36,0.3)' },
   event:           { dot: '#7C5CFC', bg: 'rgba(124,92,252,0.1)', text: '#7C5CFC', border: 'rgba(124,92,252,0.3)' }
 };
-
-customTags.forEach(t => {
-  TAG_COLORS[t.name] = { dot: t.color, bg: hexToRgba(t.color, 0.1), text: t.color, border: hexToRgba(t.color, 0.3) };
-});
+customTags.forEach(t => { TAG_COLORS[t.name] = { dot: t.color, bg: hexToRgba(t.color, 0.1), text: t.color, border: hexToRgba(t.color, 0.3) }; });
 
 const ACCENT_COLORS = [
-  { hex: '#4F8EF7', name: 'Electric Blue' },
-  { hex: '#7C5CFC', name: 'Purple' },
-  { hex: '#2DD4BF', name: 'Teal' },
-  { hex: '#3DD68C', name: 'Green' },
-  { hex: '#F75A5A', name: 'Red' },
-  { hex: '#F5A524', name: 'Orange' },
-  { hex: '#F472B6', name: 'Pink' },
-  { hex: '#E8F0FE', name: 'White' }
+  { hex: '#4F8EF7', name: 'Electric Blue' }, { hex: '#7C5CFC', name: 'Purple' }, { hex: '#2DD4BF', name: 'Teal' }, { hex: '#3DD68C', name: 'Green' },
+  { hex: '#F75A5A', name: 'Red' }, { hex: '#F5A524', name: 'Orange' }, { hex: '#F472B6', name: 'Pink' }, { hex: '#E8F0FE', name: 'White' }
 ];
 
-let events = [];
-let tasks = [];
-try {
-  events = JSON.parse(localStorage.getItem("schelude_events") || "[]");
-  tasks = JSON.parse(localStorage.getItem("schelude_tasks") || "[]");
-} catch (e) {
-  events = [];
-  tasks = [];
-}
+let events = []; let tasks = [];
+try { events = JSON.parse(localStorage.getItem("schelude_events") || "[]"); tasks = JSON.parse(localStorage.getItem("schelude_tasks") || "[]"); } 
+catch (e) { events = []; tasks = []; }
 
-let currentView = 'planner';
-let taskFilter = 'all';
-let taskFilterProject = null;
-let modalDay = null;
-let editingType = null;
-let editingIndex = -1;
-let editingDraft = null;
+let currentView = 'planner'; let taskFilter = 'all'; let taskFilterProject = null;
+let modalDay = null; let editingType = null; let editingIndex = -1; let editingDraft = null;
 
-let pomodoroInterval = null;
-let pomodoroTimeLeft = 25 * 60;
-let pomodoroMode = 'work';
-let pomodoroSession = 1;
-let pomodoroRunning = false;
+let pomodoroInterval = null; let pomodoroTimeLeft = 25 * 60; let pomodoroMode = 'work'; let pomodoroSession = 1; let pomodoroRunning = false;
 
 const ui = {
-  agentText: document.getElementById('agent-text'),
-  inputArea: document.getElementById('input-area'),
-  submitBtn: document.getElementById('submit-btn'),
-  statusPill: document.getElementById('status-pill'),
-  modalOverlay: document.getElementById('modal-overlay'),
-  modalHeader: document.getElementById('modal-header'),
-  modalInput: document.getElementById('modal-input'),
-  modalAdd: document.getElementById('modal-add'),
-  modalCancel: document.getElementById('modal-cancel'),
-  editModalOverlay: document.getElementById('edit-modal-overlay'),
-  editModalCancel: document.getElementById('edit-modal-cancel'),
-  editModalSave: document.getElementById('edit-modal-save')
+  agentText: document.getElementById('agent-text'), inputArea: document.getElementById('input-area'), submitBtn: document.getElementById('submit-btn'),
+  statusPill: document.getElementById('status-pill'), modalOverlay: document.getElementById('modal-overlay'), modalHeader: document.getElementById('modal-header'),
+  modalInput: document.getElementById('modal-input'), modalAdd: document.getElementById('modal-add'), modalCancel: document.getElementById('modal-cancel'),
+  editModalOverlay: document.getElementById('edit-modal-overlay'), editModalCancel: document.getElementById('edit-modal-cancel'), editModalSave: document.getElementById('edit-modal-save')
 };
 
 let pillTimeout;
-
-function showPill(msg) {
-  ui.statusPill.textContent = msg;
-  ui.statusPill.classList.add('show');
-  clearTimeout(pillTimeout);
-  pillTimeout = setTimeout(() => {
-    ui.statusPill.classList.remove('show');
-  }, 3000);
-}
-
-function updateAgent(msg) {
-  ui.agentText.textContent = msg;
-}
-
-function saveState() {
-  try {
-    localStorage.setItem("schelude_events", JSON.stringify(events));
-    localStorage.setItem("schelude_tasks", JSON.stringify(tasks));
-  } catch (e) {}
-}
+function showPill(msg) { ui.statusPill.textContent = msg; ui.statusPill.classList.add('show'); clearTimeout(pillTimeout); pillTimeout = setTimeout(() => { ui.statusPill.classList.remove('show'); }, 3000); }
+function updateAgent(msg) { ui.agentText.textContent = msg; }
+function saveState() { try { localStorage.setItem("schelude_events", JSON.stringify(events)); localStorage.setItem("schelude_tasks", JSON.stringify(tasks)); } catch (e) {} }
 
 function escapeHtml(unsafe) {
-  return String(unsafe || '')
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return String(unsafe || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function calcStreak(completions, frequency) {
-  const sorted = [...completions].sort().reverse();
-  if (!sorted.length) return 0;
-  let streak = 0;
-  let cursor = new Date();
-  cursor.setHours(0,0,0,0);
+  const sorted = [...completions].sort().reverse(); if (!sorted.length) return 0;
+  let streak = 0; let cursor = new Date(); cursor.setHours(0,0,0,0);
   for (let i = 0; i < 100; i++) {
     const dateStr = cursor.toISOString().slice(0,10);
-    if (sorted.includes(dateStr)) {
-      streak++;
-      cursor.setDate(cursor.getDate() - (frequency === 'weekly' ? 7 : 1));
-    } else {
-      break;
-    }
+    if (sorted.includes(dateStr)) { streak++; cursor.setDate(cursor.getDate() - (frequency === 'weekly' ? 7 : 1)); } else break;
   }
   return streak;
 }
 
 function buildEventCard(ev, i, onRemove, onEdit) {
   const tagObj = TAG_COLORS[ev.tag] || TAG_COLORS.event;
-  const dateParts = [];
-  if (ev.time) dateParts.push(ev.time);
-  if (ev.day) dateParts.push('Day ' + ev.day);
+  const dateParts = []; if (ev.time) dateParts.push(ev.time); if (ev.day) dateParts.push('Day ' + ev.day);
   const dateStr = dateParts.join(' • ');
-  
   const titleLower = (ev.title || '').toLowerCase();
   const isPriority = titleLower.includes('urgent') || titleLower.includes('important') || titleLower.includes('critical');
   const locationStr = ev.location ? ` • 📍 ${escapeHtml(ev.location)}` : '';
 
-  const div = document.createElement('div');
-  div.className = 'item-card';
-  div.style.borderLeftColor = tagObj.dot;
-  div.onmouseenter = () => { div.style.boxShadow = `-4px 0 15px -5px ${tagObj.dot}`; };
-  div.onmouseleave = () => { div.style.boxShadow = 'none'; };
-  div.onclick = () => onEdit(i);
+  const div = document.createElement('div'); div.className = 'item-card'; div.style.borderLeftColor = tagObj.dot;
+  div.onmouseenter = () => { div.style.boxShadow = `-4px 0 15px -5px ${tagObj.dot}`; }; div.onmouseleave = () => { div.style.boxShadow = 'none'; }; div.onclick = () => onEdit(i);
 
   div.innerHTML = `
     <div class="item-content">
@@ -532,295 +421,167 @@ function buildEventCard(ev, i, onRemove, onEdit) {
     </div>
     <div class="delete-btn" title="Delete">✕</div>
   `;
-  const delBtn = div.querySelector('.delete-btn');
-  delBtn.onclick = (e) => {
-    e.stopPropagation();
-    onRemove(i);
-  };
-  return div;
+  const delBtn = div.querySelector('.delete-btn'); delBtn.onclick = (e) => { e.stopPropagation(); onRemove(i); }; return div;
+}
+
+function buildGoogleEventCard(gev, onDelete) {
+  const div = document.createElement('div');
+  div.className = 'item-card'; div.style.borderLeftColor = '#4285F4';
+  div.onmouseenter = () => { div.style.boxShadow = '-4px 0 15px -5px #4285F4'; }; div.onmouseleave = () => { div.style.boxShadow = 'none'; };
+  const dateStr = gev.start ? new Date(gev.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+  div.innerHTML = `
+    <div class="item-content">
+      <div class="item-header">
+        <div class="item-title">${escapeHtml(gev.title)}</div>
+        <div class="tag-pill" style="background: rgba(66,133,244,0.1); color: #4285F4; border-color: rgba(66,133,244,0.3);">google</div>
+      </div>
+      ${dateStr ? '<div class="item-meta">' + escapeHtml(dateStr) + '</div>' : ''}
+      ${gev.location ? '<div class="item-meta">📍 ' + escapeHtml(gev.location) + '</div>' : ''}
+    </div>
+    <div class="delete-btn" title="Delete from Google Calendar">✕</div>
+  `;
+  const delBtn = div.querySelector('.delete-btn'); delBtn.onclick = async (e) => { e.stopPropagation(); if (onDelete) onDelete(gev.id); }; return div;
 }
 
 function buildTaskCard(tk, i, onToggle, onRemove, onEdit) {
-  const div = document.createElement('div');
-  div.className = `item-card ${tk.done ? 'done' : ''}`;
-  div.style.borderLeftColor = tk.done ? 'var(--muted)' : 'var(--accent)';
-  div.onclick = () => onEdit(i);
-  
-  const today = new Date();
-  let isPriority = false;
-  if (tk.day && parseInt(tk.day, 10) <= today.getDate()) isPriority = true;
-  else if (tk.due && tk.due.toLowerCase().includes('today')) isPriority = true;
+  const div = document.createElement('div'); div.className = `item-card ${tk.done ? 'done' : ''}`; div.style.borderLeftColor = tk.done ? 'var(--muted)' : 'var(--accent)'; div.onclick = () => onEdit(i);
+  const today = new Date(); let isPriority = false;
+  if (tk.day && parseInt(tk.day, 10) <= today.getDate()) isPriority = true; else if (tk.due && tk.due.toLowerCase().includes('today')) isPriority = true;
   if (tk.priority === 'urgent') isPriority = true;
-  
   const dueDate = tk.due || '';
-  
   let subtasksHtml = '';
   if (tk.subtasks && tk.subtasks.length > 0) {
-    const total = tk.subtasks.length;
-    const done = tk.subtasks.filter(s => s.done).length;
-    const pct = (done / total) * 100;
-    subtasksHtml = `
-      <div class="task-progress">
-        <div>${done} / ${total}</div>
-        <div class="task-progress-bar"><div class="task-progress-fill" style="width: ${pct}%"></div></div>
-      </div>
-    `;
+    const total = tk.subtasks.length; const done = tk.subtasks.filter(s => s.done).length; const pct = (done / total) * 100;
+    subtasksHtml = `<div class="task-progress"><div>${done} / ${total}</div><div class="task-progress-bar"><div class="task-progress-fill" style="width: ${pct}%"></div></div></div>`;
   }
-  
-  let projectHtml = '';
-  const proj = projects.find(p => p.id === (tk.project || 'inbox'));
-  if (proj) {
-    projectHtml = `<div class="task-project"><div class="project-dot" style="background: ${proj.color}; color: ${proj.color}"></div> ${escapeHtml(proj.name)}</div>`;
-  }
-
+  let projectHtml = ''; const proj = projects.find(p => p.id === (tk.project || 'inbox'));
+  if (proj) projectHtml = `<div class="task-project"><div class="project-dot" style="background: ${proj.color}; color: ${proj.color}"></div> ${escapeHtml(proj.name)}</div>`;
   let recurrenceHtml = '';
-  if (tk.recurrence && tk.recurrence !== 'none') {
-    const rMap = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly' };
-    recurrenceHtml = `<div style="font-size: 10px; color: var(--muted); margin-top: 2px;">↻ ${rMap[tk.recurrence]}</div>`;
-  }
+  if (tk.recurrence && tk.recurrence !== 'none') { const rMap = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly' }; recurrenceHtml = `<div style="font-size: 10px; color: var(--muted); margin-top: 2px;">↻ ${rMap[tk.recurrence]}</div>`; }
 
   div.innerHTML = `
     <div class="task-checkbox ${tk.done ? 'checked' : ''}"></div>
     <div class="item-content">
-      <div class="item-header">
-        ${(isPriority && !tk.done) ? '<span class="priority-text">!</span>' : ''}
-        <div class="item-title">${escapeHtml(tk.title)}</div>
-      </div>
-      ${projectHtml}
-      ${dueDate ? `<div class="item-meta">${escapeHtml(dueDate)}</div>` : ''}
-      ${recurrenceHtml}
-      ${subtasksHtml}
+      <div class="item-header">${(isPriority && !tk.done) ? '<span class="priority-text">!</span>' : ''}<div class="item-title">${escapeHtml(tk.title)}</div></div>
+      ${projectHtml} ${dueDate ? `<div class="item-meta">${escapeHtml(dueDate)}</div>` : ''} ${recurrenceHtml} ${subtasksHtml}
     </div>
     <div class="delete-btn" title="Delete">✕</div>
   `;
-  
-  div.onmouseenter = () => { div.style.boxShadow = `-4px 0 15px -5px ${tk.done ? 'var(--muted)' : 'var(--accent)'}`; };
-  div.onmouseleave = () => { div.style.boxShadow = 'none'; };
-
-  const checkbox = div.querySelector('.task-checkbox');
-  checkbox.onclick = (e) => {
-    e.stopPropagation();
-    onToggle(i);
-  };
-  
-  const delBtn = div.querySelector('.delete-btn');
-  delBtn.onclick = (e) => {
-    e.stopPropagation();
-    onRemove(i);
-  };
-  return div;
+  div.onmouseenter = () => { div.style.boxShadow = `-4px 0 15px -5px ${tk.done ? 'var(--muted)' : 'var(--accent)'}`; }; div.onmouseleave = () => { div.style.boxShadow = 'none'; };
+  const checkbox = div.querySelector('.task-checkbox'); checkbox.onclick = (e) => { e.stopPropagation(); onToggle(i); };
+  const delBtn = div.querySelector('.delete-btn'); delBtn.onclick = (e) => { e.stopPropagation(); onRemove(i); }; return div;
 }
 
 function appendTaskSections(listEl, filteredTasks, onEdit) {
   const sorted = [...filteredTasks].sort((a,b) => (a.done === b.done) ? 0 : a.done ? 1 : -1);
-  const groups = {};
-  sorted.forEach(tk => {
-    const pid = tk.project || 'inbox';
-    if (!groups[pid]) groups[pid] = [];
-    groups[pid].push(tk);
-  });
-  
+  const groups = {}; sorted.forEach(tk => { const pid = tk.project || 'inbox'; if (!groups[pid]) groups[pid] = []; groups[pid].push(tk); });
   projects.forEach(p => {
     if (groups[p.id]) {
-      const sectionHeader = document.createElement('div');
-      sectionHeader.className = 'task-section-header';
-      sectionHeader.innerHTML = `<div class="project-dot" style="background: ${p.color}; color: ${p.color}"></div> ${escapeHtml(p.name)}`;
-      listEl.appendChild(sectionHeader);
-      
+      const sectionHeader = document.createElement('div'); sectionHeader.className = 'task-section-header'; sectionHeader.innerHTML = `<div class="project-dot" style="background: ${p.color}; color: ${p.color}"></div> ${escapeHtml(p.name)}`; listEl.appendChild(sectionHeader);
       groups[p.id].forEach(tk => {
         const globalIndex = tasks.indexOf(tk);
         listEl.appendChild(buildTaskCard(tk, globalIndex, (idx) => {
           const target = tasks[idx];
           if (!target.done && target.recurrence && target.recurrence !== 'none') {
-            if (target.due) {
-              const d = new Date(target.due);
-              if (!isNaN(d.getTime())) {
-                if (target.recurrence === 'daily') d.setDate(d.getDate() + 1);
-                else if (target.recurrence === 'weekly') d.setDate(d.getDate() + 7);
-                else if (target.recurrence === 'monthly') d.setMonth(d.getMonth() + 1);
-                target.due = d.toISOString().split('T')[0];
-              }
-            }
-            target.done = false;
-            if (target.subtasks) target.subtasks.forEach(s => s.done = false);
-            updateAgent("Recurring task reset");
-            showPill(`Task reset — next due ${target.due || 'soon'}`);
-          } else {
-            target.done = !target.done;
-            updateAgent(target.done ? "Marked task as done" : "Marked task as undone");
-          }
-          saveState(); 
-          renderView();
-        }, (idx) => {
-          tasks.splice(idx, 1); saveState(); updateAgent("Removed task"); renderView();
-        }, onEdit));
+            if (target.due) { const d = new Date(target.due); if (!isNaN(d.getTime())) { if (target.recurrence === 'daily') d.setDate(d.getDate() + 1); else if (target.recurrence === 'weekly') d.setDate(d.getDate() + 7); else if (target.recurrence === 'monthly') d.setMonth(d.getMonth() + 1); target.due = d.toISOString().split('T')[0]; } }
+            target.done = false; if (target.subtasks) target.subtasks.forEach(s => s.done = false); updateAgent("Recurring task reset"); showPill(`Task reset — next due ${target.due || 'soon'}`);
+          } else { target.done = !target.done; updateAgent(target.done ? "Marked task as done" : "Marked task as undone"); }
+          saveState(); renderView();
+        }, (idx) => { tasks.splice(idx, 1); saveState(); updateAgent("Removed task"); renderView(); }, onEdit));
       });
     }
   });
 }
 
 function renderEvents() {
-  const list = document.getElementById('events-list');
-  if (!list) return;
-  if (events.length === 0) {
-    list.innerHTML = '<div class="empty-state">No events yet — type something below</div>';
-    return;
-  }
+  const list = document.getElementById('events-list'); if (!list) return;
+  if (events.length === 0 && googleEvents.length === 0) { list.innerHTML = '<div class="empty-state">No events yet — type something below</div>'; return; }
   list.innerHTML = '';
-  events.forEach((ev, i) => {
-    list.appendChild(buildEventCard(ev, i, (idx) => {
-      events.splice(idx, 1); saveState(); updateAgent("Removed event"); renderView();
-    }, openEditEvent));
-  });
+  events.forEach((ev, i) => { list.appendChild(buildEventCard(ev, i, (idx) => { events.splice(idx, 1); saveState(); updateAgent("Removed event"); renderView(); }, openEditEvent)); });
+  if (googleConnected) { googleEvents.forEach(gev => { list.appendChild(buildGoogleEventCard(gev, deleteGoogleEvent)); }); }
 }
 
 function renderTasks() {
-  const list = document.getElementById('tasks-list');
-  if (!list) return;
-  if (tasks.length === 0) {
-    list.innerHTML = '<div class="empty-state">No tasks yet</div>';
-    return;
-  }
-  list.innerHTML = '';
-  appendTaskSections(list, tasks, openEditTask);
+  const list = document.getElementById('tasks-list'); if (!list) return;
+  if (tasks.length === 0) { list.innerHTML = '<div class="empty-state">No tasks yet</div>'; return; }
+  list.innerHTML = ''; appendTaskSections(list, tasks, openEditTask);
 }
 
 function renderCalendar() {
-  const calDays = document.getElementById('cal-days');
-  if (!calDays) return;
-  
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const todayDate = now.getDate();
-  
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const prevMonthDays = new Date(year, month, 0).getDate();
-  
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const currentMonthName = monthNames[month];
-
+  const calDays = document.getElementById('cal-days'); if (!calDays) return;
+  const now = new Date(); const year = now.getFullYear(); const month = now.getMonth(); const todayDate = now.getDate();
+  const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate(); const prevMonthDays = new Date(year, month, 0).getDate();
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; const currentMonthName = monthNames[month];
   calDays.innerHTML = '';
   
   const eventDays = new Set();
   events.forEach(ev => {
     if (ev.day) eventDays.add(parseInt(ev.day, 10));
     else if (ev.date) {
-      const d = new Date(ev.date);
-      if (!isNaN(d.getTime()) && d.getMonth() === month && d.getFullYear() === year) {
-        eventDays.add(d.getDate());
-      } else {
-        const match = String(ev.date).match(/\b(\d{1,2})\b/);
-        if (match) eventDays.add(parseInt(match[1], 10));
-      }
+      const d = new Date(ev.date); if (!isNaN(d.getTime()) && d.getMonth() === month && d.getFullYear() === year) eventDays.add(d.getDate());
+      else { const match = String(ev.date).match(/\b(\d{1,2})\b/); if (match) eventDays.add(parseInt(match[1], 10)); }
     }
   });
-
-  for (let i = firstDay - 1; i >= 0; i--) {
-    const d = document.createElement('div');
-    d.className = 'cal-day other-month';
-    d.textContent = prevMonthDays - i;
-    calDays.appendChild(d);
+  
+  const googleEventDays = new Set();
+  if (googleConnected) {
+    googleEvents.forEach(gev => {
+      if (gev.start) { const d = new Date(gev.start); if (!isNaN(d.getTime()) && d.getMonth() === month && d.getFullYear() === year) googleEventDays.add(d.getDate()); }
+    });
   }
 
+  for (let i = firstDay - 1; i >= 0; i--) { const d = document.createElement('div'); d.className = 'cal-day other-month'; d.textContent = prevMonthDays - i; calDays.appendChild(d); }
   for (let i = 1; i <= daysInMonth; i++) {
-    const d = document.createElement('div');
-    d.className = `cal-day ${i === todayDate ? 'today' : ''}`;
-    d.textContent = i;
+    const d = document.createElement('div'); d.className = `cal-day ${i === todayDate ? 'today' : ''}`; d.textContent = i;
+    const dotsWrap = document.createElement('div'); dotsWrap.className = 'dots-wrap';
     
     if (eventDays.has(i)) {
-      const dot = document.createElement('div');
-      dot.className = 'dot';
+      const dot = document.createElement('div'); dot.className = 'dot';
       const evOnDay = events.find(e => e.day && parseInt(e.day,10) === i);
-      if (evOnDay) {
-        const tObj = TAG_COLORS[evOnDay.tag] || TAG_COLORS.event;
-        dot.style.color = tObj.dot;
-        dot.style.background = tObj.dot;
-      }
-      d.appendChild(dot);
+      if (evOnDay) { const tObj = TAG_COLORS[evOnDay.tag] || TAG_COLORS.event; dot.style.color = tObj.dot; dot.style.background = tObj.dot; } 
+      else { dot.style.color = 'var(--text)'; dot.style.background = 'var(--text)'; }
+      dotsWrap.appendChild(dot);
     }
+    if (googleEventDays.has(i)) { const dot = document.createElement('div'); dot.className = 'dot'; dot.style.color = '#4285F4'; dot.style.background = '#4285F4'; dotsWrap.appendChild(dot); }
+    if (dotsWrap.children.length > 0) d.appendChild(dotsWrap);
     
-    d.onclick = () => {
-      openModal(i, currentMonthName);
-    };
-    calDays.appendChild(d);
+    d.onclick = () => { openModal(i, currentMonthName); }; calDays.appendChild(d);
   }
-  
-  const totalCells = firstDay + daysInMonth;
-  let nextDay = 1;
-  for (let i = totalCells; i < 42; i++) {
-    const d = document.createElement('div');
-    d.className = 'cal-day other-month';
-    d.textContent = nextDay++;
-    calDays.appendChild(d);
-  }
+  const totalCells = firstDay + daysInMonth; let nextDay = 1;
+  for (let i = totalCells; i < 42; i++) { const d = document.createElement('div'); d.className = 'cal-day other-month'; d.textContent = nextDay++; calDays.appendChild(d); }
 }
 
 window.setTaskFilter = function(f) { taskFilter = f; renderView(); };
 window.setTaskProjectFilter = function(id) { taskFilterProject = id; renderView(); };
 
 function renderSidebarProjects() {
-  const list = document.getElementById('sidebar-projects');
-  list.innerHTML = '';
+  const list = document.getElementById('sidebar-projects'); list.innerHTML = '';
   projects.forEach(p => {
     if (p.id === 'inbox') return;
-    const div = document.createElement('div');
-    div.className = 'nav-item';
-    if (currentView === 'tasks' && taskFilterProject === p.id) div.classList.add('active');
-    div.setAttribute('data-project', p.id);
+    const div = document.createElement('div'); div.className = 'nav-item'; if (currentView === 'tasks' && taskFilterProject === p.id) div.classList.add('active'); div.setAttribute('data-project', p.id);
     div.innerHTML = `<div class="project-dot" style="background: ${p.color}; color: ${p.color}"></div> ${escapeHtml(p.name)}`;
-    div.onclick = () => {
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      div.classList.add('active');
-      currentView = 'tasks';
-      taskFilterProject = p.id;
-      renderView();
-    };
+    div.onclick = () => { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); div.classList.add('active'); currentView = 'tasks'; taskFilterProject = p.id; renderView(); };
     list.appendChild(div);
   });
-  
   if (goals.length > 0) {
     list.innerHTML += `<div class="sidebar-header" style="margin-top: 24px;">GOALS</div>`;
     goals.forEach(g => {
-      const div = document.createElement('div');
-      div.className = 'nav-item';
-      div.style.cursor = 'default';
+      const div = document.createElement('div'); div.className = 'nav-item'; div.style.cursor = 'default';
       div.innerHTML = `<div class="project-dot" style="background: ${g.color};"></div> <div style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(g.title)}</div> <span class="badge">${g.progress}%</span>`;
       list.appendChild(div);
     });
   }
-  
-  const inboxCount = tasks.filter(t => !t.project || t.project === 'inbox').length;
-  document.getElementById('inbox-badge').textContent = inboxCount;
-  
+  const inboxCount = tasks.filter(t => !t.project || t.project === 'inbox').length; document.getElementById('inbox-badge').textContent = inboxCount;
   const inboxEl = document.querySelector('#sidebar-inbox .nav-item');
-  if (currentView === 'tasks' && taskFilterProject === 'inbox') inboxEl.classList.add('active');
-  else inboxEl.classList.remove('active');
-  
-  inboxEl.onclick = () => {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    inboxEl.classList.add('active');
-    currentView = 'tasks';
-    taskFilterProject = 'inbox';
-    renderView();
-  };
+  if (currentView === 'tasks' && taskFilterProject === 'inbox') inboxEl.classList.add('active'); else inboxEl.classList.remove('active');
+  inboxEl.onclick = () => { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); inboxEl.classList.add('active'); currentView = 'tasks'; taskFilterProject = 'inbox'; renderView(); };
 }
 
 function renderPomodoro() {
-  const display = document.getElementById('pomodoro-display');
-  const modeLbl = document.getElementById('pomodoro-mode');
-  const sessLbl = document.getElementById('pomodoro-session');
+  const display = document.getElementById('pomodoro-display'); const modeLbl = document.getElementById('pomodoro-mode'); const sessLbl = document.getElementById('pomodoro-session');
   if (!display) return;
-  
-  const m = Math.floor(pomodoroTimeLeft / 60);
-  const s = pomodoroTimeLeft % 60;
-  display.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  
-  if (pomodoroMode === 'work') modeLbl.textContent = 'DEEP WORK';
-  else if (pomodoroMode === 'short') modeLbl.textContent = 'SHORT BREAK';
-  else modeLbl.textContent = 'LONG BREAK';
-  
+  const m = Math.floor(pomodoroTimeLeft / 60); const s = pomodoroTimeLeft % 60; display.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  if (pomodoroMode === 'work') modeLbl.textContent = 'DEEP WORK'; else if (pomodoroMode === 'short') modeLbl.textContent = 'SHORT BREAK'; else modeLbl.textContent = 'LONG BREAK';
   sessLbl.textContent = `Session ${pomodoroSession} of 4`;
 }
 
@@ -829,117 +590,68 @@ function startPomodoro() {
   pomodoroInterval = setInterval(() => {
     pomodoroTimeLeft--;
     if (pomodoroTimeLeft <= 0) {
-      pomodoroRunning = false;
-      clearInterval(pomodoroInterval);
-      showPill("Session complete — take a break");
-      
-      if (pomodoroMode === 'work') {
-        if (pomodoroSession % 4 === 0) { pomodoroMode = 'long'; pomodoroTimeLeft = 15 * 60; } 
-        else { pomodoroMode = 'short'; pomodoroTimeLeft = 5 * 60; }
-      } else {
-        pomodoroMode = 'work'; pomodoroTimeLeft = 25 * 60; pomodoroSession++;
-      }
-      const btn = document.getElementById('btn-pomo-start');
-      if (btn) btn.textContent = 'Start';
+      pomodoroRunning = false; clearInterval(pomodoroInterval); showPill("Session complete — take a break");
+      if (pomodoroMode === 'work') { if (pomodoroSession % 4 === 0) { pomodoroMode = 'long'; pomodoroTimeLeft = 15 * 60; } else { pomodoroMode = 'short'; pomodoroTimeLeft = 5 * 60; } } 
+      else { pomodoroMode = 'work'; pomodoroTimeLeft = 25 * 60; pomodoroSession++; }
+      const btn = document.getElementById('btn-pomo-start'); if (btn) btn.textContent = 'Start';
     }
     renderPomodoro();
   }, 1000);
 }
 
+function updateGoogleStatusUI() { renderView(); }
+
+async function disconnectGoogle() {
+  try {
+    await fetch(BACKEND_URL + '/auth/disconnect', { headers: { 'x-api-token': API_TOKEN } });
+    googleConnected = false; googleEvents = []; showPill('Google Calendar disconnected'); renderView();
+  } catch (e) { showPill('Could not disconnect'); }
+}
+
+async function deleteGoogleEvent(eventId) {
+  try {
+    await fetch(BACKEND_URL + '/calendar/events/' + eventId, { method: 'DELETE', headers: { 'x-api-token': API_TOKEN } });
+    googleEvents = googleEvents.filter(e => e.id !== eventId); renderView(); showPill('Deleted from Google Calendar');
+  } catch (e) { showPill('Could not delete event'); }
+}
+
 function renderView() {
-  document.querySelector('.agent-status').style.display = widgetSettings.agent ? 'block' : 'none';
-  renderSidebarProjects();
-  
-  const content = document.getElementById('content');
-  content.className = currentView === 'focus' ? 'focus-mode' : '';
+  document.querySelector('.agent-status').style.display = widgetSettings.agent ? 'block' : 'none'; renderSidebarProjects();
+  const content = document.getElementById('content'); content.className = currentView === 'focus' ? 'focus-mode' : '';
   
   if (currentView === 'planner') {
     let colLeftHtml = '';
-    if (widgetSettings.calendar) {
-      colLeftHtml = `
-        <div id="col-left">
-          <div class="card" style="height: 100%;">
-            <div class="card-header">Calendar</div>
-            <div class="calendar-grid">
-              <div class="cal-weekdays"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>
-              <div class="cal-days" id="cal-days"></div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-    let eventsHtml = '';
-    if (widgetSettings.events) {
-      eventsHtml = `<div class="card" style="flex: 1;"><div class="card-header">Events & Scheduled</div><div class="list-container" id="events-list"></div></div>`;
-    }
-    let tasksHtml = '';
-    if (widgetSettings.tasks) {
-      tasksHtml = `<div class="card" style="flex: 1;"><div class="card-header">Tasks</div><div class="list-container" id="tasks-list"></div></div>`;
-    }
+    if (widgetSettings.calendar) colLeftHtml = `<div id="col-left"><div class="card" style="height: 100%;"><div class="card-header">Calendar</div><div class="calendar-grid"><div class="cal-weekdays"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div><div class="cal-days" id="cal-days"></div></div></div></div>`;
+    let eventsHtml = ''; if (widgetSettings.events) eventsHtml = `<div class="card" style="flex: 1;"><div class="card-header">Events & Scheduled</div><div class="list-container" id="events-list"></div></div>`;
+    let tasksHtml = ''; if (widgetSettings.tasks) tasksHtml = `<div class="card" style="flex: 1;"><div class="card-header">Tasks</div><div class="list-container" id="tasks-list"></div></div>`;
 
-    content.innerHTML = `
-      ${colLeftHtml}
-      <div id="col-right" style="display: ${(widgetSettings.events || widgetSettings.tasks) ? 'flex' : 'none'};">
-        ${eventsHtml}
-        ${tasksHtml}
-      </div>
-    `;
-    if (widgetSettings.calendar) renderCalendar();
-    if (widgetSettings.events) renderEvents();
-    if (widgetSettings.tasks) renderTasks();
+    content.innerHTML = `${colLeftHtml}<div id="col-right" style="display: ${(widgetSettings.events || widgetSettings.tasks) ? 'flex' : 'none'};">${eventsHtml}${tasksHtml}</div>`;
+    if (widgetSettings.calendar) renderCalendar(); if (widgetSettings.events) renderEvents(); if (widgetSettings.tasks) renderTasks();
 
   } else if (currentView === 'upcoming') {
-    content.innerHTML = `
-      <div class="full-width-container">
-        <div class="view-header">UPCOMING EVENTS</div>
-        <div class="list-container" id="events-list"></div>
-      </div>
-    `;
+    content.innerHTML = `<div class="full-width-container"><div class="view-header">UPCOMING EVENTS</div><div class="list-container" id="events-list"></div></div>`;
     const list = document.getElementById('events-list');
-    const sorted = events.slice().filter(e => e.day).sort((a,b) => parseInt(a.day||0) - parseInt(b.day||0));
-    events.filter(e => !e.day).forEach(e => sorted.push(e));
+    const sorted = events.slice().filter(e => e.day).sort((a,b) => parseInt(a.day||0) - parseInt(b.day||0)); events.filter(e => !e.day).forEach(e => sorted.push(e));
+    const sortedG = googleEvents.slice().sort((a,b) => new Date(a.start) - new Date(b.start));
     
-    if (sorted.length === 0) list.innerHTML = '<div class="empty-state">No upcoming events</div>';
+    if (sorted.length === 0 && sortedG.length === 0) list.innerHTML = '<div class="empty-state">No upcoming events</div>';
     else {
-      sorted.forEach((ev) => {
-        const i = events.indexOf(ev);
-        list.appendChild(buildEventCard(ev, i, (idx) => { events.splice(idx, 1); saveState(); renderView(); }, openEditEvent));
-      });
+      sorted.forEach((ev) => { const i = events.indexOf(ev); list.appendChild(buildEventCard(ev, i, (idx) => { events.splice(idx, 1); saveState(); renderView(); }, openEditEvent)); });
+      if (googleConnected) { sortedG.forEach(gev => { list.appendChild(buildGoogleEventCard(gev, deleteGoogleEvent)); }); }
     }
 
   } else if (currentView === 'tasks') {
     let projFiltersHtml = `<button class="filter-btn ${!taskFilterProject ? 'active' : ''}" onclick="setTaskProjectFilter(null)">All Projects</button>`;
-    projects.forEach(p => {
-      projFiltersHtml += `<button class="filter-btn ${taskFilterProject === p.id ? 'active' : ''}" onclick="setTaskProjectFilter('${p.id}')">${escapeHtml(p.name)}</button>`;
-    });
+    projects.forEach(p => { projFiltersHtml += `<button class="filter-btn ${taskFilterProject === p.id ? 'active' : ''}" onclick="setTaskProjectFilter('${p.id}')">${escapeHtml(p.name)}</button>`; });
 
-    content.innerHTML = `
-      <div class="full-width-container">
-        <div class="view-header">ALL TASKS</div>
-        <div class="filter-row" style="flex-wrap: wrap;">${projFiltersHtml}</div>
-        <div class="filter-row">
-          <button class="filter-btn ${taskFilter==='all'?'active':''}" onclick="setTaskFilter('all')">All</button>
-          <button class="filter-btn ${taskFilter==='completed'?'active':''}" onclick="setTaskFilter('completed')">Completed</button>
-        </div>
-        <div class="list-container" id="tasks-list"></div>
-      </div>
-    `;
+    content.innerHTML = `<div class="full-width-container"><div class="view-header">ALL TASKS</div><div class="filter-row" style="flex-wrap: wrap;">${projFiltersHtml}</div><div class="filter-row"><button class="filter-btn ${taskFilter==='all'?'active':''}" onclick="setTaskFilter('all')">All</button><button class="filter-btn ${taskFilter==='completed'?'active':''}" onclick="setTaskFilter('completed')">Completed</button></div><div class="list-container" id="tasks-list"></div></div>`;
     const list = document.getElementById('tasks-list');
-    let filtered = tasks;
-    if (taskFilterProject) filtered = filtered.filter(t => (t.project || 'inbox') === taskFilterProject);
-    if (taskFilter === 'completed') filtered = filtered.filter(t => t.done);
-    
-    if (filtered.length === 0) list.innerHTML = `<div class="empty-state">No tasks found</div>`;
-    else appendTaskSections(list, filtered, openEditTask);
+    let filtered = tasks; if (taskFilterProject) filtered = filtered.filter(t => (t.project || 'inbox') === taskFilterProject); if (taskFilter === 'completed') filtered = filtered.filter(t => t.done);
+    if (filtered.length === 0) list.innerHTML = `<div class="empty-state">No tasks found</div>`; else appendTaskSections(list, filtered, openEditTask);
 
   } else if (currentView === 'focus') {
-    const today = new Date();
-    const currentDay = today.getDate();
-    const hr = today.getHours();
-    
-    let energyText = "Rest window — avoid scheduling deep work";
-    let energyLevel = "LOW ENERGY";
-    let energyDot = "var(--muted)";
+    const today = new Date(); const currentDay = today.getDate(); const hr = today.getHours();
+    let energyText = "Rest window — avoid scheduling deep work"; let energyLevel = "LOW ENERGY"; let energyDot = "var(--muted)";
     if (hr >= 6 && hr < 9) { energyText = "Morning peak — ideal for deep work and complex tasks"; energyLevel = "MORNING PEAK"; energyDot = "var(--green)"; }
     else if (hr >= 9 && hr < 12) { energyText = "High focus window — tackle your hardest problems now"; energyLevel = "HIGH FOCUS"; energyDot = "var(--green)"; }
     else if (hr >= 12 && hr < 14) { energyText = "Post-lunch dip — good for admin, emails, or light tasks"; energyLevel = "POST-LUNCH DIP"; energyDot = "var(--yellow)"; }
@@ -947,171 +659,71 @@ function renderView() {
     else if (hr >= 16 && hr < 18) { energyText = "Second wind — creative work and planning"; energyLevel = "SECOND WIND"; energyDot = "var(--green)"; }
     else if (hr >= 18 && hr < 22) { energyText = "Wind-down — review, reflect, and light reading"; energyLevel = "WIND-DOWN"; energyDot = "var(--accent)"; }
     
-    let suggestedHtml = '';
-    const pendingTasks = tasks.filter(t => !t.done);
-    if (energyLevel.includes("FOCUS") || energyLevel.includes("PEAK")) {
-      pendingTasks.filter(t => { const l = t.title.toLowerCase(); return t.tag === 'test' || t.tag === 'homework' || l.includes('study'); }).slice(0,3).forEach(t => {
-        suggestedHtml += `<div class="energy-task-hint">→ ${escapeHtml(t.title)}</div>`;
-      });
-    } else if (energyLevel.includes("DIP") || energyLevel.includes("RECOVERY")) {
-      pendingTasks.filter(t => t.project === 'inbox' || !t.project).slice(0,3).forEach(t => {
-        suggestedHtml += `<div class="energy-task-hint">→ ${escapeHtml(t.title)}</div>`;
-      });
-    } else if (energyLevel.includes("WIND")) {
-      pendingTasks.filter(t => t.tag === 'work' || t.tag === 'event').slice(0,3).forEach(t => {
-        suggestedHtml += `<div class="energy-task-hint">→ ${escapeHtml(t.title)}</div>`;
-      });
-    }
+    let suggestedHtml = ''; const pendingTasks = tasks.filter(t => !t.done);
+    if (energyLevel.includes("FOCUS") || energyLevel.includes("PEAK")) { pendingTasks.filter(t => { const l = t.title.toLowerCase(); return t.tag === 'test' || t.tag === 'homework' || l.includes('study'); }).slice(0,3).forEach(t => { suggestedHtml += `<div class="energy-task-hint">→ ${escapeHtml(t.title)}</div>`; }); } 
+    else if (energyLevel.includes("DIP") || energyLevel.includes("RECOVERY")) { pendingTasks.filter(t => t.project === 'inbox' || !t.project).slice(0,3).forEach(t => { suggestedHtml += `<div class="energy-task-hint">→ ${escapeHtml(t.title)}</div>`; }); } 
+    else if (energyLevel.includes("WIND")) { pendingTasks.filter(t => t.tag === 'work' || t.tag === 'event').slice(0,3).forEach(t => { suggestedHtml += `<div class="energy-task-hint">→ ${escapeHtml(t.title)}</div>`; }); }
 
     const todayStr = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
     content.innerHTML = `
       <div class="full-width-container">
         <div class="view-header" style="font-size: 20px; color: var(--accent);">TODAY — ${todayStr.toUpperCase()}</div>
-        
-        <div class="energy-widget">
-          <div class="energy-dot" style="background: ${energyDot}; box-shadow: 0 0 6px ${energyDot};"></div>
-          <div style="flex:1;">
-            <div class="energy-level" style="color: ${energyDot};">${energyLevel}</div>
-            <div class="energy-suggestion">${energyText}</div>
-            <div class="energy-tasks">${suggestedHtml}</div>
-          </div>
-        </div>
-        
+        <div class="energy-widget"><div class="energy-dot" style="background: ${energyDot}; box-shadow: 0 0 6px ${energyDot};"></div><div style="flex:1;"><div class="energy-level" style="color: ${energyDot};">${energyLevel}</div><div class="energy-suggestion">${energyText}</div><div class="energy-tasks">${suggestedHtml}</div></div></div>
         <div class="pomodoro-widget">
-          <div style="flex:1;">
-            <div class="pomodoro-display" id="pomodoro-display">25:00</div>
-            <div class="pomodoro-mode" id="pomodoro-mode">DEEP WORK</div>
-          </div>
-          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-            <div class="pomodoro-session" id="pomodoro-session">Session 1 of 4</div>
-            <div class="pomodoro-controls">
-              <button class="btn-primary" id="btn-pomo-start">${pomodoroRunning ? 'Pause' : 'Start'}</button>
-              <button class="btn-outline" id="btn-pomo-reset">Reset</button>
-            </div>
-          </div>
+          <div style="flex:1;"><div class="pomodoro-display" id="pomodoro-display">25:00</div><div class="pomodoro-mode" id="pomodoro-mode">DEEP WORK</div></div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;"><div class="pomodoro-session" id="pomodoro-session">Session 1 of 4</div><div class="pomodoro-controls"><button class="btn-primary" id="btn-pomo-start">${pomodoroRunning ? 'Pause' : 'Start'}</button><button class="btn-outline" id="btn-pomo-reset">Reset</button></div></div>
         </div>
-
         <div class="list-container" id="focus-list" style="padding: 0;"></div>
       </div>
     `;
-
     renderPomodoro();
-    document.getElementById('btn-pomo-start').onclick = () => {
-      pomodoroRunning = !pomodoroRunning;
-      if (pomodoroRunning) startPomodoro();
-      else clearInterval(pomodoroInterval);
-      document.getElementById('btn-pomo-start').textContent = pomodoroRunning ? 'Pause' : 'Start';
-    };
-    document.getElementById('btn-pomo-reset').onclick = () => {
-      pomodoroRunning = false; clearInterval(pomodoroInterval);
-      document.getElementById('btn-pomo-start').textContent = 'Start';
-      if (pomodoroMode === 'work') pomodoroTimeLeft = 25 * 60;
-      else if (pomodoroMode === 'short') pomodoroTimeLeft = 5 * 60;
-      else pomodoroTimeLeft = 15 * 60;
-      renderPomodoro();
-    };
+    document.getElementById('btn-pomo-start').onclick = () => { pomodoroRunning = !pomodoroRunning; if (pomodoroRunning) startPomodoro(); else clearInterval(pomodoroInterval); document.getElementById('btn-pomo-start').textContent = pomodoroRunning ? 'Pause' : 'Start'; };
+    document.getElementById('btn-pomo-reset').onclick = () => { pomodoroRunning = false; clearInterval(pomodoroInterval); document.getElementById('btn-pomo-start').textContent = 'Start'; if (pomodoroMode === 'work') pomodoroTimeLeft = 25 * 60; else if (pomodoroMode === 'short') pomodoroTimeLeft = 5 * 60; else pomodoroTimeLeft = 15 * 60; renderPomodoro(); };
     
     const list = document.getElementById('focus-list');
     const todayEvents = events.filter(e => e.day && parseInt(e.day) === currentDay);
     const todayTasks = tasks.filter(t => (t.day && parseInt(t.day) === currentDay) || (t.due && t.due.toLowerCase().includes('today')));
-    
     if (todayEvents.length === 0 && todayTasks.length === 0) list.innerHTML = '<div class="empty-state">Nothing scheduled for today</div>';
     else {
-      todayEvents.forEach(ev => {
-        const i = events.indexOf(ev);
-        list.appendChild(buildEventCard(ev, i, (idx) => { events.splice(idx, 1); saveState(); renderView(); }, openEditEvent));
-      });
-      todayTasks.forEach(tk => {
-        const i = tasks.indexOf(tk);
-        list.appendChild(buildTaskCard(tk, i, (idx) => { tasks[idx].done = !tasks[idx].done; saveState(); renderView(); }, (idx) => { tasks.splice(idx, 1); saveState(); renderView(); }, openEditTask));
-      });
+      todayEvents.forEach(ev => { const i = events.indexOf(ev); list.appendChild(buildEventCard(ev, i, (idx) => { events.splice(idx, 1); saveState(); renderView(); }, openEditEvent)); });
+      todayTasks.forEach(tk => { const i = tasks.indexOf(tk); list.appendChild(buildTaskCard(tk, i, (idx) => { tasks[idx].done = !tasks[idx].done; saveState(); renderView(); }, (idx) => { tasks.splice(idx, 1); saveState(); renderView(); }, openEditTask)); });
     }
 
   } else if (currentView === 'habits') {
     const todayStr = new Date().toISOString().slice(0, 10);
-    let activeHabits = habits.length;
-    let maxStreak = 0;
-    habits.forEach(h => {
-      h.streak = calcStreak(h.completions, h.frequency);
-      if (h.streak > maxStreak) maxStreak = h.streak;
-    });
+    let activeHabits = habits.length; let maxStreak = 0;
+    habits.forEach(h => { h.streak = calcStreak(h.completions, h.frequency); if (h.streak > maxStreak) maxStreak = h.streak; });
 
     content.innerHTML = `
       <div class="full-width-container">
         <div class="view-header">HABITS</div>
-        <div style="font-size: 12px; color: var(--muted); margin-bottom: 24px;">
-          Tracking <span style="color: var(--accent); font-weight: bold;">${activeHabits}</span> active habits. Longest streak: <span style="color: var(--accent); font-weight: bold;">${maxStreak}</span> days.
-        </div>
+        <div style="font-size: 12px; color: var(--muted); margin-bottom: 24px;">Tracking <span style="color: var(--accent); font-weight: bold;">${activeHabits}</span> active habits. Longest streak: <span style="color: var(--accent); font-weight: bold;">${maxStreak}</span> days.</div>
         <div class="list-container" id="habits-list" style="padding: 0; gap: var(--card-gap);"></div>
-        
         <div class="workspace-divider" style="margin-top: 24px;"></div>
-        <div class="workspace-section">
-          <div class="workspace-header">ADD HABIT</div>
-          <div class="add-form">
-            <input type="text" id="new-habit-name" placeholder="Habit name..." class="modal-input" style="flex:1;">
-            <select id="new-habit-freq" class="modal-select" style="width: 120px;">
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-            </select>
-            <div class="color-swatches" id="new-habit-color"></div>
-            <button class="btn-primary" id="btn-add-habit">Add</button>
-          </div>
-        </div>
+        <div class="workspace-section"><div class="workspace-header">ADD HABIT</div><div class="add-form"><input type="text" id="new-habit-name" placeholder="Habit name..." class="modal-input" style="flex:1;"><select id="new-habit-freq" class="modal-select" style="width: 120px;"><option value="daily">Daily</option><option value="weekly">Weekly</option></select><div class="color-swatches" id="new-habit-color"></div><button class="btn-primary" id="btn-add-habit">Add</button></div></div>
       </div>
     `;
 
     let hSwatchesHtml = ACCENT_COLORS.map(c => `<div class="color-swatch h-swatch" data-hex="${c.hex}" style="background: ${c.hex}"></div>`).join('');
     document.getElementById('new-habit-color').innerHTML = hSwatchesHtml;
     let selectedHabitColor = ACCENT_COLORS[0].hex;
-    document.querySelectorAll('.h-swatch').forEach(sw => {
-      sw.onclick = () => { document.querySelectorAll('.h-swatch').forEach(s => s.classList.remove('active')); sw.classList.add('active'); selectedHabitColor = sw.getAttribute('data-hex'); };
-    });
+    document.querySelectorAll('.h-swatch').forEach(sw => { sw.onclick = () => { document.querySelectorAll('.h-swatch').forEach(s => s.classList.remove('active')); sw.classList.add('active'); selectedHabitColor = sw.getAttribute('data-hex'); }; });
     document.querySelector('.h-swatch').classList.add('active');
 
     document.getElementById('btn-add-habit').onclick = () => {
-      const name = document.getElementById('new-habit-name').value.trim();
-      const freq = document.getElementById('new-habit-freq').value;
-      if (name) {
-        habits.push({ id: crypto.randomUUID() || Date.now().toString(), name, color: selectedHabitColor, frequency: freq, completions: [], streak: 0, createdAt: new Date().toISOString() });
-        saveHabits(); renderView();
-      }
+      const name = document.getElementById('new-habit-name').value.trim(); const freq = document.getElementById('new-habit-freq').value;
+      if (name) { habits.push({ id: crypto.randomUUID() || Date.now().toString(), name, color: selectedHabitColor, frequency: freq, completions: [], streak: 0, createdAt: new Date().toISOString() }); saveHabits(); renderView(); }
     };
 
     const list = document.getElementById('habits-list');
     if (habits.length === 0) list.innerHTML = '<div class="empty-state">No habits yet</div>';
     
     habits.forEach((h, i) => {
-      const doneToday = h.completions.includes(todayStr);
-      let dotsHtml = '';
-      for (let d = 6; d >= 0; d--) {
-        const cursor = new Date(); cursor.setDate(cursor.getDate() - d);
-        const dStr = cursor.toISOString().slice(0,10);
-        const isDone = h.completions.includes(dStr);
-        const isToday = d === 0;
-        dotsHtml += `<div class="habit-day-dot ${isDone ? 'done' : ''} ${isToday ? 'today' : ''}" ${isDone ? `style="background: ${h.color}; box-shadow: 0 0 4px ${h.color}80;"` : ''}></div>`;
-      }
-      const div = document.createElement('div');
-      div.className = 'habit-card';
-      div.style.borderLeftColor = h.color;
-      div.innerHTML = `
-        <div style="flex: 1;">
-          <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${escapeHtml(h.name)} <span style="font-size: 10px; color: var(--muted); font-weight: normal; margin-left: 8px; text-transform:uppercase;">${h.frequency}</span></div>
-          <div class="streak-badge" style="color: ${h.color}; text-shadow: 0 0 6px ${h.color}80;">🔥 ${h.streak} day streak</div>
-        </div>
-        <div class="habit-days">${dotsHtml}</div>
-        <button class="btn-habit-done ${doneToday ? 'done-today' : ''}" style="border-color: ${h.color}; color: ${doneToday ? 'var(--bg)' : h.color}; background: ${doneToday ? h.color : 'transparent'};" ${doneToday ? 'disabled' : ''}>
-          ${doneToday ? '✓ Done' : 'Mark Done Today'}
-        </button>
-        <div class="delete-btn" style="right: 12px;" onclick="deleteHabit('${h.id}')">✕</div>
-      `;
-      const btn = div.querySelector('.btn-habit-done');
-      if (!doneToday) {
-        btn.onclick = () => {
-          h.completions.push(todayStr); h.streak = calcStreak(h.completions, h.frequency);
-          saveHabits(); showPill(`Habit logged — ${h.streak} day streak`); renderView();
-        };
-      }
-      list.appendChild(div);
+      const doneToday = h.completions.includes(todayStr); let dotsHtml = '';
+      for (let d = 6; d >= 0; d--) { const cursor = new Date(); cursor.setDate(cursor.getDate() - d); const dStr = cursor.toISOString().slice(0,10); const isDone = h.completions.includes(dStr); const isToday = d === 0; dotsHtml += `<div class="habit-day-dot ${isDone ? 'done' : ''} ${isToday ? 'today' : ''}" ${isDone ? `style="background: ${h.color}; box-shadow: 0 0 4px ${h.color}80;"` : ''}></div>`; }
+      const div = document.createElement('div'); div.className = 'habit-card'; div.style.borderLeftColor = h.color;
+      div.innerHTML = `<div style="flex: 1;"><div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${escapeHtml(h.name)} <span style="font-size: 10px; color: var(--muted); font-weight: normal; margin-left: 8px; text-transform:uppercase;">${h.frequency}</span></div><div class="streak-badge" style="color: ${h.color}; text-shadow: 0 0 6px ${h.color}80;">🔥 ${h.streak} day streak</div></div><div class="habit-days">${dotsHtml}</div><button class="btn-habit-done ${doneToday ? 'done-today' : ''}" style="border-color: ${h.color}; color: ${doneToday ? 'var(--bg)' : h.color}; background: ${doneToday ? h.color : 'transparent'};" ${doneToday ? 'disabled' : ''}>${doneToday ? '✓ Done' : 'Mark Done Today'}</button><div class="delete-btn" style="right: 12px;" onclick="deleteHabit('${h.id}')">✕</div>`;
+      const btn = div.querySelector('.btn-habit-done'); if (!doneToday) { btn.onclick = () => { h.completions.push(todayStr); h.streak = calcStreak(h.completions, h.frequency); saveHabits(); showPill(`Habit logged — ${h.streak} day streak`); renderView(); }; } list.appendChild(div);
     });
 
   } else if (currentView === 'matrix') {
@@ -1119,85 +731,59 @@ function renderView() {
       <div class="full-width-container" style="padding-bottom: 0;">
         <div class="view-header">EISENHOWER MATRIX</div>
         <div class="matrix-grid">
-          <div class="matrix-quadrant" style="border-top: 3px solid var(--red);">
-            <div class="matrix-header"><span>Urgent & Important</span> <span class="badge" id="q1-badge">0</span></div>
-            <div class="matrix-list" id="q1-list"></div>
-          </div>
-          <div class="matrix-quadrant" style="border-top: 3px solid var(--accent);">
-            <div class="matrix-header"><span>Not Urgent & Important</span> <span class="badge" id="q2-badge">0</span></div>
-            <div class="matrix-list" id="q2-list"></div>
-          </div>
-          <div class="matrix-quadrant" style="border-top: 3px solid var(--yellow);">
-            <div class="matrix-header"><span>Urgent & Not Important</span> <span class="badge" id="q3-badge">0</span></div>
-            <div class="matrix-list" id="q3-list"></div>
-          </div>
-          <div class="matrix-quadrant" style="border-top: 3px solid var(--muted);">
-            <div class="matrix-header"><span>Not Urgent & Not Important</span> <span class="badge" id="q4-badge">0</span></div>
-            <div class="matrix-list" id="q4-list"></div>
-          </div>
+          <div class="matrix-quadrant" style="border-top: 3px solid var(--red);"><div class="matrix-header"><span>Urgent & Important</span> <span class="badge" id="q1-badge">0</span></div><div class="matrix-list" id="q1-list"></div></div>
+          <div class="matrix-quadrant" style="border-top: 3px solid var(--accent);"><div class="matrix-header"><span>Not Urgent & Important</span> <span class="badge" id="q2-badge">0</span></div><div class="matrix-list" id="q2-list"></div></div>
+          <div class="matrix-quadrant" style="border-top: 3px solid var(--yellow);"><div class="matrix-header"><span>Urgent & Not Important</span> <span class="badge" id="q3-badge">0</span></div><div class="matrix-list" id="q3-list"></div></div>
+          <div class="matrix-quadrant" style="border-top: 3px solid var(--muted);"><div class="matrix-header"><span>Not Urgent & Not Important</span> <span class="badge" id="q4-badge">0</span></div><div class="matrix-list" id="q4-list"></div></div>
         </div>
       </div>
     `;
-    const today = new Date();
-    const currentDay = today.getDate();
-    
+    const today = new Date(); const currentDay = today.getDate();
     let q1=[], q2=[], q3=[], q4=[];
     tasks.filter(t => !t.done).forEach(t => {
-      let urgent = false;
-      if (t.priority === 'urgent') urgent = true;
-      if (t.day && parseInt(t.day, 10) <= currentDay) urgent = true;
-      if (t.due && t.due.toLowerCase().includes('today')) urgent = true;
-      
-      let important = false;
-      if (t.project && t.project !== 'inbox') important = true;
-      if (t.subtasks && t.subtasks.length > 0) important = true;
-      const tL = (t.title || '').toLowerCase();
-      if (tL.includes('important') || tL.includes('critical') || tL.includes('exam') || tL.includes('test') || tL.includes('deadline')) important = true;
-      
-      if (urgent && important) q1.push(t); else if (!urgent && important) q2.push(t);
-      else if (urgent && !important) q3.push(t); else q4.push(t);
+      let urgent = false; if (t.priority === 'urgent') urgent = true; if (t.day && parseInt(t.day, 10) <= currentDay) urgent = true; if (t.due && t.due.toLowerCase().includes('today')) urgent = true;
+      let important = false; if (t.project && t.project !== 'inbox') important = true; if (t.subtasks && t.subtasks.length > 0) important = true;
+      const tL = (t.title || '').toLowerCase(); if (tL.includes('important') || tL.includes('critical') || tL.includes('exam') || tL.includes('test') || tL.includes('deadline')) important = true;
+      if (urgent && important) q1.push(t); else if (!urgent && important) q2.push(t); else if (urgent && !important) q3.push(t); else q4.push(t);
     });
     
-    document.getElementById('q1-badge').textContent = q1.length;
-    document.getElementById('q2-badge').textContent = q2.length;
-    document.getElementById('q3-badge').textContent = q3.length;
-    document.getElementById('q4-badge').textContent = q4.length;
-    
+    document.getElementById('q1-badge').textContent = q1.length; document.getElementById('q2-badge').textContent = q2.length; document.getElementById('q3-badge').textContent = q3.length; document.getElementById('q4-badge').textContent = q4.length;
     [q1, q2, q3, q4].forEach((arr, i) => {
       const listEl = document.getElementById(`q${i+1}-list`);
       if (arr.length === 0) listEl.innerHTML = '<div class="empty-state">No tasks</div>';
       else {
         arr.forEach(tk => {
-          const globalIndex = tasks.indexOf(tk);
-          const div = document.createElement('div');
-          div.className = 'item-card';
-          div.style.padding = '8px 12px';
-          div.onclick = () => openEditTask(globalIndex);
-          div.innerHTML = `
-            <div class="item-content">
-              <div class="item-title" style="font-size: 12px;">${escapeHtml(tk.title)}</div>
-              ${tk.due ? `<div class="item-meta" style="font-size: 10px;">${escapeHtml(tk.due)}</div>` : ''}
-            </div>
-            <div class="delete-btn" style="top: 8px; right: 8px;">✕</div>
-          `;
-          div.querySelector('.delete-btn').onclick = (e) => { e.stopPropagation(); tasks.splice(globalIndex, 1); saveState(); renderView(); };
-          listEl.appendChild(div);
+          const globalIndex = tasks.indexOf(tk); const div = document.createElement('div'); div.className = 'item-card'; div.style.padding = '8px 12px'; div.onclick = () => openEditTask(globalIndex);
+          div.innerHTML = `<div class="item-content"><div class="item-title" style="font-size: 12px;">${escapeHtml(tk.title)}</div>${tk.due ? `<div class="item-meta" style="font-size: 10px;">${escapeHtml(tk.due)}</div>` : ''}</div><div class="delete-btn" style="top: 8px; right: 8px;">✕</div>`;
+          div.querySelector('.delete-btn').onclick = (e) => { e.stopPropagation(); tasks.splice(globalIndex, 1); saveState(); renderView(); }; listEl.appendChild(div);
         });
       }
     });
 
   } else if (currentView === 'workspace') {
+    let googleHtml = '';
+    if (!googleConnected) {
+      googleHtml = `<button class="btn-primary" id="btn-google-connect">Connect Google Calendar</button><div style="font-size: 11px; color: var(--muted); margin-top: 8px;">Sync your Google Calendar events with Schelude. Connect once and your events appear automatically.</div>`;
+    } else {
+      googleHtml = `<div style="display: flex; align-items: center; gap: 12px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green);"></div><span style="color: var(--green); font-weight: bold;">Connected to Google Calendar</span></div><div style="font-size: 11px; color: var(--muted); margin-top: 8px;">${googleEvents.length} events synced this month</div><div style="display: flex; gap: 8px; margin-top: 12px;"><button class="btn-primary" id="btn-google-refresh">Refresh Events</button><button class="btn-outline" id="btn-google-disconnect">Disconnect</button></div>`;
+    }
+
     content.innerHTML = `
       <div class="full-width-container">
         <div class="view-header">WORKSPACE</div>
         
+        <div class="workspace-section">
+          <div class="workspace-header">GOOGLE CALENDAR</div>
+          ${googleHtml}
+        </div>
+        <div class="workspace-divider"></div>
+
         <div class="workspace-section">
           <div class="workspace-header">APPEARANCE</div>
           <div class="workspace-row"><div class="workspace-label">Accent Color</div><div class="color-swatches" id="accent-swatches"></div></div>
           <div class="workspace-row"><div class="workspace-label">Font Style</div><div class="button-group" id="font-buttons"><button class="btn-toggle" data-font="mono">Mono</button><button class="btn-toggle" data-font="sans">Sans</button><button class="btn-toggle" data-font="serif">Serif</button></div></div>
           <div class="workspace-row"><div class="workspace-label">Density</div><div class="button-group" id="density-buttons"><button class="btn-toggle" data-density="compact">Compact</button><button class="btn-toggle" data-density="default">Default</button><button class="btn-toggle" data-density="comfortable">Comfortable</button></div></div>
         </div>
-
         <div class="workspace-divider"></div>
         
         <div class="workspace-section">
@@ -1210,49 +796,30 @@ function renderView() {
             <div class="toggle-row"><span>Agent Status</span><label class="switch"><input type="checkbox" id="toggle-agent" ${widgetSettings.agent?'checked':''}><span class="slider"></span></label></div>
           </div>
         </div>
-
         <div class="workspace-divider"></div>
         
         <div class="workspace-section">
           <div class="workspace-header">CUSTOM TAGS</div>
           <div class="workspace-desc">Create your own tags with custom colors</div>
           <div class="list-editor" id="custom-tags-list"></div>
-          <div class="add-form">
-            <input type="text" id="new-tag-name" placeholder="Tag name..." class="modal-input" style="flex:1;">
-            <input type="color" id="new-tag-color" value="#4F8EF7" class="color-picker">
-            <button class="btn-primary" id="btn-add-tag">Add</button>
-          </div>
+          <div class="add-form"><input type="text" id="new-tag-name" placeholder="Tag name..." class="modal-input" style="flex:1;"><input type="color" id="new-tag-color" value="#4F8EF7" class="color-picker"><button class="btn-primary" id="btn-add-tag">Add</button></div>
         </div>
-        
         <div class="workspace-divider"></div>
 
         <div class="workspace-section">
           <div class="workspace-header">PROJECTS</div>
           <div class="workspace-desc">Organize your tasks into projects</div>
           <div class="list-editor" id="projects-list"></div>
-          <div class="add-form">
-            <input type="text" id="new-project-name" placeholder="Project name..." class="modal-input" style="flex:1;">
-            <div class="color-swatches" id="new-project-color"></div>
-            <button class="btn-primary" id="btn-add-project">Add</button>
-          </div>
+          <div class="add-form"><input type="text" id="new-project-name" placeholder="Project name..." class="modal-input" style="flex:1;"><div class="color-swatches" id="new-project-color"></div><button class="btn-primary" id="btn-add-project">Add</button></div>
         </div>
-        
         <div class="workspace-divider"></div>
         
         <div class="workspace-section">
           <div class="workspace-header">GOALS</div>
           <div class="workspace-desc">Track long-term outcomes linked to your projects</div>
           <div class="list-editor" id="goals-list"></div>
-          <div class="add-form" style="flex-wrap: wrap;">
-            <input type="text" id="new-goal-title" placeholder="Goal title..." class="modal-input" style="flex:1;">
-            <input type="text" id="new-goal-desc" placeholder="Description (optional)" class="modal-input" style="flex:1;">
-            <input type="date" id="new-goal-date" class="modal-input" style="width:130px;">
-            <select id="new-goal-proj" class="modal-select" style="width:120px;"></select>
-            <div class="color-swatches" id="new-goal-color"></div>
-            <button class="btn-primary" id="btn-add-goal">Add</button>
-          </div>
+          <div class="add-form" style="flex-wrap: wrap;"><input type="text" id="new-goal-title" placeholder="Goal title..." class="modal-input" style="flex:1;"><input type="text" id="new-goal-desc" placeholder="Description (optional)" class="modal-input" style="flex:1;"><input type="date" id="new-goal-date" class="modal-input" style="width:130px;"><select id="new-goal-proj" class="modal-select" style="width:120px;"></select><div class="color-swatches" id="new-goal-color"></div><button class="btn-primary" id="btn-add-goal">Add</button></div>
         </div>
-
       </div>
     `;
     setupWorkspaceInteractions();
@@ -1260,27 +827,25 @@ function renderView() {
 }
 
 function setupWorkspaceInteractions() {
+  if (document.getElementById('btn-google-connect')) document.getElementById('btn-google-connect').onclick = () => { window.location.href = BACKEND_URL + '/auth/google'; };
+  if (document.getElementById('btn-google-refresh')) document.getElementById('btn-google-refresh').onclick = fetchGoogleEvents;
+  if (document.getElementById('btn-google-disconnect')) document.getElementById('btn-google-disconnect').onclick = disconnectGoogle;
+
   const accentContainer = document.getElementById('accent-swatches');
   ACCENT_COLORS.forEach(c => {
-    const sw = document.createElement('div');
-    sw.className = `color-swatch ${accentColor === c.hex ? 'active' : ''}`;
-    sw.style.background = c.hex;
-    sw.onclick = () => {
-      accentColor = c.hex; document.documentElement.style.setProperty('--accent', accentColor); document.documentElement.style.setProperty('--accent-glow', hexToRgba(accentColor, 0.15)); localStorage.setItem("schelude_accent", accentColor); renderView();
-    };
+    const sw = document.createElement('div'); sw.className = `color-swatch ${accentColor === c.hex ? 'active' : ''}`; sw.style.background = c.hex;
+    sw.onclick = () => { accentColor = c.hex; document.documentElement.style.setProperty('--accent', accentColor); document.documentElement.style.setProperty('--accent-glow', hexToRgba(accentColor, 0.15)); localStorage.setItem("schelude_accent", accentColor); renderView(); };
     accentContainer.appendChild(sw);
   });
 
   document.querySelectorAll('#font-buttons .btn-toggle').forEach(btn => {
-    const fontType = btn.getAttribute('data-font');
-    const fMap = { 'mono': "'SF Mono', 'Fira Code', 'Courier New', monospace", 'sans': "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", 'serif': "'Georgia', 'Times New Roman', serif" };
+    const fontType = btn.getAttribute('data-font'); const fMap = { 'mono': "'SF Mono', 'Fira Code', 'Courier New', monospace", 'sans': "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", 'serif': "'Georgia', 'Times New Roman', serif" };
     if (fontStyle === fMap[fontType]) btn.classList.add('active');
     btn.onclick = () => { fontStyle = fMap[fontType]; document.body.style.fontFamily = fontStyle; localStorage.setItem("schelude_font", fontStyle); renderView(); };
   });
   
   document.querySelectorAll('#density-buttons .btn-toggle').forEach(btn => {
-    const dType = btn.getAttribute('data-density');
-    if (density === dType) btn.classList.add('active');
+    const dType = btn.getAttribute('data-density'); if (density === dType) btn.classList.add('active');
     btn.onclick = () => {
       density = dType; localStorage.setItem("schelude_density", density);
       if (density === 'compact') { document.documentElement.style.setProperty('--card-padding', '8px'); document.documentElement.style.setProperty('--card-gap', '6px'); } 
@@ -1300,26 +865,16 @@ function setupWorkspaceInteractions() {
   allTags.forEach(t => {
     const safeName = t.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     const delBtn = t.custom ? `<div class="delete-btn" style="position:static; opacity:1;" onclick="deleteCustomTag('${safeName}')">✕</div>` : '';
-    tagsList.innerHTML += `
-      <div class="list-editor-row">
-        <div class="project-dot" style="background: ${t.color}"></div>
-        <span>${escapeHtml(t.name)}</span>
-        <div style="margin-left: auto;">${delBtn}</div>
-      </div>
-    `;
+    tagsList.innerHTML += `<div class="list-editor-row"><div class="project-dot" style="background: ${t.color}"></div><span>${escapeHtml(t.name)}</span><div style="margin-left: auto;">${delBtn}</div></div>`;
   });
   document.getElementById('btn-add-tag').onclick = () => {
-    const name = document.getElementById('new-tag-name').value.trim();
-    const col = document.getElementById('new-tag-color').value;
-    if (name && !customTags.find(x => x.name === name) && !TAG_COLORS[name]) {
-      customTags.push({ name, color: col }); localStorage.setItem("schelude_custom_tags", JSON.stringify(customTags)); TAG_COLORS[name] = { dot: col, bg: hexToRgba(col, 0.1), text: col, border: hexToRgba(col, 0.3) }; renderView();
-    }
+    const name = document.getElementById('new-tag-name').value.trim(); const col = document.getElementById('new-tag-color').value;
+    if (name && !customTags.find(x => x.name === name) && !TAG_COLORS[name]) { customTags.push({ name, color: col }); localStorage.setItem("schelude_custom_tags", JSON.stringify(customTags)); TAG_COLORS[name] = { dot: col, bg: hexToRgba(col, 0.1), text: col, border: hexToRgba(col, 0.3) }; renderView(); }
   };
 
   const projList = document.getElementById('projects-list');
   let pSwatchesHtml = ACCENT_COLORS.map(c => `<div class="color-swatch p-swatch" data-hex="${c.hex}" style="background: ${c.hex}"></div>`).join('');
-  document.getElementById('new-project-color').innerHTML = pSwatchesHtml;
-  let selectedProjColor = ACCENT_COLORS[0].hex;
+  document.getElementById('new-project-color').innerHTML = pSwatchesHtml; let selectedProjColor = ACCENT_COLORS[0].hex;
   document.querySelectorAll('.p-swatch').forEach(sw => { sw.onclick = () => { document.querySelectorAll('.p-swatch').forEach(s => s.classList.remove('active')); sw.classList.add('active'); selectedProjColor = sw.getAttribute('data-hex'); }; });
   document.querySelector('.p-swatch').classList.add('active');
 
@@ -1328,50 +883,28 @@ function setupWorkspaceInteractions() {
     const taskCount = tasks.filter(t => (t.project || 'inbox') === p.id).length;
     projList.innerHTML += `<div class="list-editor-row"><div class="project-dot" style="background: ${p.color}"></div><span>${escapeHtml(p.name)} <span style="color: var(--muted); font-size: 11px;">(${taskCount})</span></span><div style="margin-left: auto;">${delHtml}</div></div>`;
   });
-  document.getElementById('btn-add-project').onclick = () => {
-    const name = document.getElementById('new-project-name').value.trim();
-    if (name) { projects.push({ id: crypto.randomUUID(), name, color: selectedProjColor }); localStorage.setItem("schelude_projects", JSON.stringify(projects)); renderView(); }
-  };
+  document.getElementById('btn-add-project').onclick = () => { const name = document.getElementById('new-project-name').value.trim(); if (name) { projects.push({ id: crypto.randomUUID(), name, color: selectedProjColor }); localStorage.setItem("schelude_projects", JSON.stringify(projects)); renderView(); } };
   
-  // Goals
   const goalList = document.getElementById('goals-list');
   goals.forEach((g, i) => {
     goalList.innerHTML += `
       <div class="list-editor-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div class="project-dot" style="background: ${g.color}"></div>
-            <div style="font-weight: bold;">${escapeHtml(g.title)}</div>
-          </div>
-          <div class="delete-btn" style="position:static; opacity:1;" onclick="deleteGoal('${g.id}')">✕</div>
-        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between;"><div style="display: flex; align-items: center; gap: 12px;"><div class="project-dot" style="background: ${g.color}"></div><div style="font-weight: bold;">${escapeHtml(g.title)}</div></div><div class="delete-btn" style="position:static; opacity:1;" onclick="deleteGoal('${g.id}')">✕</div></div>
         <div style="font-size: 11px; color: var(--muted);">${escapeHtml(g.description || '')} • Target: ${g.targetDate}</div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div class="task-progress-bar" style="cursor: pointer;" onclick="updateGoalProgress('${g.id}')">
-            <div class="task-progress-fill" style="width: ${g.progress}%; background: ${g.color};"></div>
-          </div>
-          <div style="font-size: 10px; color: var(--muted);">${g.progress}%</div>
-        </div>
+        <div style="display: flex; align-items: center; gap: 8px;"><div class="task-progress-bar" style="cursor: pointer;" onclick="updateGoalProgress('${g.id}')"><div class="task-progress-fill" style="width: ${g.progress}%; background: ${g.color};"></div></div><div style="font-size: 10px; color: var(--muted);">${g.progress}%</div></div>
       </div>
     `;
   });
 
   let gSwatchesHtml = ACCENT_COLORS.map(c => `<div class="color-swatch g-swatch" data-hex="${c.hex}" style="background: ${c.hex}"></div>`).join('');
-  document.getElementById('new-goal-color').innerHTML = gSwatchesHtml;
-  let selectedGoalColor = ACCENT_COLORS[0].hex;
+  document.getElementById('new-goal-color').innerHTML = gSwatchesHtml; let selectedGoalColor = ACCENT_COLORS[0].hex;
   document.querySelectorAll('.g-swatch').forEach(sw => { sw.onclick = () => { document.querySelectorAll('.g-swatch').forEach(s => s.classList.remove('active')); sw.classList.add('active'); selectedGoalColor = sw.getAttribute('data-hex'); }; });
   document.querySelector('.g-swatch').classList.add('active');
   
-  let gpOpts = '<option value="">No Project</option>';
-  projects.forEach(p => { gpOpts += `<option value="${p.id}">${escapeHtml(p.name)}</option>`; });
-  document.getElementById('new-goal-proj').innerHTML = gpOpts;
-  
+  let gpOpts = '<option value="">No Project</option>'; projects.forEach(p => { gpOpts += `<option value="${p.id}">${escapeHtml(p.name)}</option>`; }); document.getElementById('new-goal-proj').innerHTML = gpOpts;
   document.getElementById('btn-add-goal').onclick = () => {
     const title = document.getElementById('new-goal-title').value.trim();
-    if (title) {
-      goals.push({ id: crypto.randomUUID() || Date.now().toString(), title, description: document.getElementById('new-goal-desc').value.trim(), targetDate: document.getElementById('new-goal-date').value, projectId: document.getElementById('new-goal-proj').value, progress: 0, color: selectedGoalColor });
-      saveGoals(); renderView();
-    }
+    if (title) { goals.push({ id: crypto.randomUUID() || Date.now().toString(), title, description: document.getElementById('new-goal-desc').value.trim(), targetDate: document.getElementById('new-goal-date').value, projectId: document.getElementById('new-goal-proj').value, progress: 0, color: selectedGoalColor }); saveGoals(); renderView(); }
   };
 }
 
@@ -1382,10 +915,7 @@ window.deleteGoal = function(id) { goals = goals.filter(x => x.id !== id); saveG
 
 window.updateGoalProgress = function(id) {
   const val = prompt("Enter progress percentage (0-100):");
-  if (val !== null) {
-    const p = parseInt(val, 10);
-    if (!isNaN(p) && p >= 0 && p <= 100) { const goal = goals.find(x => x.id === id); if (goal) { goal.progress = p; saveGoals(); renderView(); } }
-  }
+  if (val !== null) { const p = parseInt(val, 10); if (!isNaN(p) && p >= 0 && p <= 100) { const goal = goals.find(x => x.id === id); if (goal) { goal.progress = p; saveGoals(); renderView(); } } }
 };
 
 document.querySelectorAll('.nav-item[data-view]').forEach(el => {
@@ -1395,8 +925,7 @@ document.querySelectorAll('.nav-item[data-view]').forEach(el => {
 function openModal(dayNum, monthName) { modalDay = dayNum; ui.modalHeader.textContent = `Add to ${monthName} ${dayNum}`; ui.modalInput.value = ''; ui.modalOverlay.classList.add('show'); ui.modalInput.focus(); }
 function closeModal() { ui.modalOverlay.classList.remove('show'); modalDay = null; }
 
-ui.modalCancel.onclick = closeModal;
-ui.modalOverlay.onclick = (e) => { if (e.target === ui.modalOverlay) closeModal(); };
+ui.modalCancel.onclick = closeModal; ui.modalOverlay.onclick = (e) => { if (e.target === ui.modalOverlay) closeModal(); };
 
 ui.modalAdd.onclick = () => {
   const val = ui.modalInput.value.trim();
@@ -1413,15 +942,7 @@ function renderTaskModal() {
     <div class="modal-field"><div class="modal-label">Due Date</div><input type="text" id="edit-task-due" class="modal-input" value="${escapeHtml(editingDraft.due || '')}"></div>
     <div class="modal-field"><div class="modal-label">Project</div><select id="edit-task-project" class="modal-select">${projectsHtml}</select></div>
     <div class="modal-field"><div class="modal-label">Priority</div><select id="edit-task-priority" class="modal-select"><option value="normal" ${editingDraft.priority !== 'urgent' ? 'selected' : ''}>Normal</option><option value="urgent" ${editingDraft.priority === 'urgent' ? 'selected' : ''}>Urgent</option></select></div>
-    <div class="modal-field">
-      <div class="modal-label">Recurrence</div>
-      <select id="edit-task-recurrence" class="modal-select">
-        <option value="none" ${(editingDraft.recurrence === 'none' || !editingDraft.recurrence) ? 'selected' : ''}>None</option>
-        <option value="daily" ${editingDraft.recurrence === 'daily' ? 'selected' : ''}>Daily</option>
-        <option value="weekly" ${editingDraft.recurrence === 'weekly' ? 'selected' : ''}>Weekly</option>
-        <option value="monthly" ${editingDraft.recurrence === 'monthly' ? 'selected' : ''}>Monthly</option>
-      </select>
-    </div>
+    <div class="modal-field"><div class="modal-label">Recurrence</div><select id="edit-task-recurrence" class="modal-select"><option value="none" ${(editingDraft.recurrence === 'none' || !editingDraft.recurrence) ? 'selected' : ''}>None</option><option value="daily" ${editingDraft.recurrence === 'daily' ? 'selected' : ''}>Daily</option><option value="weekly" ${editingDraft.recurrence === 'weekly' ? 'selected' : ''}>Weekly</option><option value="monthly" ${editingDraft.recurrence === 'monthly' ? 'selected' : ''}>Monthly</option></select></div>
     <label class="modal-checkbox-row" style="margin-top: 4px;"><input type="checkbox" id="edit-task-done" ${editingDraft.done ? 'checked' : ''}><span>Done</span></label>
     <div class="workspace-divider" style="margin: 8px 0;"></div>
     <div class="modal-field"><div class="modal-label">Subtasks</div><div class="subtasks-list">${subtasksHtml}</div><div style="display: flex; gap: 8px; margin-top: 8px;"><input type="text" id="new-subtask-title" class="modal-input" placeholder="New subtask..."><button class="btn-primary" id="btn-add-subtask">Add</button></div></div>
@@ -1433,12 +954,7 @@ function renderTaskModal() {
 }
 
 function updateDraftFromInputs() {
-  editingDraft.title = document.getElementById('edit-task-title').value;
-  editingDraft.due = document.getElementById('edit-task-due').value;
-  editingDraft.priority = document.getElementById('edit-task-priority').value;
-  editingDraft.project = document.getElementById('edit-task-project').value;
-  editingDraft.recurrence = document.getElementById('edit-task-recurrence').value;
-  editingDraft.done = document.getElementById('edit-task-done').checked;
+  editingDraft.title = document.getElementById('edit-task-title').value; editingDraft.due = document.getElementById('edit-task-due').value; editingDraft.priority = document.getElementById('edit-task-priority').value; editingDraft.project = document.getElementById('edit-task-project').value; editingDraft.recurrence = document.getElementById('edit-task-recurrence').value; editingDraft.done = document.getElementById('edit-task-done').checked;
 }
 
 function openEditTask(index) { editingType = 'task'; editingIndex = index; editingDraft = JSON.parse(JSON.stringify(tasks[index])); if (!editingDraft.subtasks) editingDraft.subtasks = []; if (!editingDraft.project) editingDraft.project = 'inbox'; renderTaskModal(); }
@@ -1447,27 +963,50 @@ function openEditEvent(index) {
   editingType = 'event'; editingIndex = index; const ev = events[index];
   let tagsOptions = ['test', 'homework', 'school', 'extracurricular', 'work', 'event'].map(t => `<option value="${t}" ${ev.tag === t ? 'selected' : ''}>${t}</option>`).join('');
   customTags.forEach(ct => { tagsOptions += `<option value="${ct.name}" ${ev.tag === ct.name ? 'selected' : ''}>${escapeHtml(ct.name)}</option>`; });
+  
+  let syncBtnHtml = '';
+  if (googleConnected) {
+    syncBtnHtml = `<button class="btn-outline" id="btn-sync-google" style="margin-top: 8px; width: 100%; border-color: #4285F4; color: #4285F4;">Sync to Google Calendar</button>`;
+  }
+
   document.getElementById('edit-modal-header').textContent = 'Edit Event';
   document.getElementById('edit-modal-body').innerHTML = `
     <div class="modal-field"><div class="modal-label">Title</div><input type="text" id="edit-event-title" class="modal-input" value="${escapeHtml(ev.title || '')}"></div>
     <div class="modal-field"><div class="modal-label">Time</div><input type="text" id="edit-event-time" class="modal-input" value="${escapeHtml(ev.time || '')}"></div>
     <div class="modal-field"><div class="modal-label">Day</div><input type="number" id="edit-event-day" class="modal-input" value="${ev.day || ''}"></div>
     <div class="modal-field"><div class="modal-label">Tag</div><select id="edit-event-tag" class="modal-select">${tagsOptions}</select></div>
+    ${syncBtnHtml}
   `;
   ui.editModalOverlay.classList.add('show');
+  if (googleConnected) {
+    document.getElementById('btn-sync-google').onclick = () => syncEventToGoogle(ev);
+  }
+}
+
+async function syncEventToGoogle(ev) {
+  if (!googleConnected) return;
+  try {
+    const dateStr = ev.day ? new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2,'0') + '-' + String(ev.day).padStart(2,'0') : null;
+    if (!dateStr) { showPill('Add a day to sync'); return; }
+    
+    const res = await fetch(BACKEND_URL + '/calendar/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-token': API_TOKEN },
+      body: JSON.stringify({ title: ev.title, date: dateStr, time: ev.time || null, description: ev.tag ? 'Tag: ' + ev.tag : null, reminder_minutes: 30 })
+    });
+    const data = await res.json();
+    if (data.success) { showPill('Synced to Google Calendar'); fetchGoogleEvents(); closeEditModal(); }
+  } catch (e) { showPill('Could not sync to Google'); }
 }
 
 function closeEditModal() { ui.editModalOverlay.classList.remove('show'); editingType = null; editingIndex = -1; editingDraft = null; }
-ui.editModalCancel.onclick = closeEditModal;
-ui.editModalOverlay.onclick = (e) => { if (e.target === ui.editModalOverlay) closeEditModal(); };
+ui.editModalCancel.onclick = closeEditModal; ui.editModalOverlay.onclick = (e) => { if (e.target === ui.editModalOverlay) closeEditModal(); };
 
 ui.editModalSave.onclick = () => {
   if (editingType === 'task' && editingIndex >= 0) { updateDraftFromInputs(); tasks[editingIndex] = editingDraft; } 
   else if (editingType === 'event' && editingIndex >= 0) {
-    events[editingIndex].title = document.getElementById('edit-event-title').value;
-    events[editingIndex].time = document.getElementById('edit-event-time').value;
-    const d = document.getElementById('edit-event-day').value; events[editingIndex].day = d ? parseInt(d, 10) : null;
-    events[editingIndex].tag = document.getElementById('edit-event-tag').value;
+    events[editingIndex].title = document.getElementById('edit-event-title').value; events[editingIndex].time = document.getElementById('edit-event-time').value;
+    const d = document.getElementById('edit-event-day').value; events[editingIndex].day = d ? parseInt(d, 10) : null; events[editingIndex].tag = document.getElementById('edit-event-tag').value;
   }
   saveState(); renderView(); closeEditModal();
 };
@@ -1492,11 +1031,7 @@ async function submitInput() {
 ui.submitBtn.onclick = submitInput;
 ui.inputArea.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitInput(); } });
 
-// Search Logic
-const searchOverlay = document.getElementById('search-overlay');
-const searchInput = document.getElementById('search-input');
-const searchResults = document.getElementById('search-results');
-
+const searchOverlay = document.getElementById('search-overlay'); const searchInput = document.getElementById('search-input'); const searchResults = document.getElementById('search-results');
 document.getElementById('search-btn').onclick = openSearch;
 document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); } if (e.key === 'Escape') closeSearch(); });
 searchOverlay.onclick = (e) => { if (e.target === searchOverlay) closeSearch(); }
@@ -1505,33 +1040,40 @@ function openSearch() { searchOverlay.classList.add('show'); searchInput.value =
 function closeSearch() { searchOverlay.classList.remove('show'); }
 
 searchInput.addEventListener('input', () => {
-  const q = searchInput.value.toLowerCase().trim();
-  if (!q) { searchResults.innerHTML = ''; return; }
-  let html = '';
-  
+  const q = searchInput.value.toLowerCase().trim(); if (!q) { searchResults.innerHTML = ''; return; } let html = '';
   const evMatch = events.map((e,i) => ({e,i})).filter(x => (x.e.title && x.e.title.toLowerCase().includes(q)) || (x.e.tag && x.e.tag.toLowerCase().includes(q)) || (x.e.location && x.e.location.toLowerCase().includes(q))).slice(0,5);
-  if (evMatch.length > 0) {
-    html += '<div class="search-group-header">EVENTS</div>';
-    evMatch.forEach(x => { html += `<div class="search-result-item" onclick="closeSearch(); openEditEvent(${x.i});"><div class="search-result-title">${escapeHtml(x.e.title)}</div><div class="search-result-meta">${x.e.day ? `Day ${x.e.day}` : ''} • ${x.e.tag}</div></div>`; });
-  }
-  
+  if (evMatch.length > 0) { html += '<div class="search-group-header">EVENTS</div>'; evMatch.forEach(x => { html += `<div class="search-result-item" onclick="closeSearch(); openEditEvent(${x.i});"><div class="search-result-title">${escapeHtml(x.e.title)}</div><div class="search-result-meta">${x.e.day ? `Day ${x.e.day}` : ''} • ${x.e.tag}</div></div>`; }); }
   const tkMatch = tasks.map((t,i) => ({t,i})).filter(x => (x.t.title && x.t.title.toLowerCase().includes(q)) || (x.t.due && x.t.due.toLowerCase().includes(q)) || (x.t.project && projects.find(p => p.id === x.t.project)?.name.toLowerCase().includes(q))).slice(0,5);
-  if (tkMatch.length > 0) {
-    html += '<div class="search-group-header">TASKS</div>';
-    tkMatch.forEach(x => { const pName = projects.find(p => p.id === (x.t.project||'inbox'))?.name || 'Inbox'; html += `<div class="search-result-item" onclick="closeSearch(); openEditTask(${x.i});"><div class="search-result-title">${escapeHtml(x.t.title)}</div><div class="search-result-meta">${x.t.done ? 'Done' : 'Pending'} • ${pName}</div></div>`; });
-  }
-  
+  if (tkMatch.length > 0) { html += '<div class="search-group-header">TASKS</div>'; tkMatch.forEach(x => { const pName = projects.find(p => p.id === (x.t.project||'inbox'))?.name || 'Inbox'; html += `<div class="search-result-item" onclick="closeSearch(); openEditTask(${x.i});"><div class="search-result-title">${escapeHtml(x.t.title)}</div><div class="search-result-meta">${x.t.done ? 'Done' : 'Pending'} • ${pName}</div></div>`; }); }
   const hbMatch = habits.filter(h => h.name.toLowerCase().includes(q)).slice(0,5);
-  if (hbMatch.length > 0) {
-    html += '<div class="search-group-header">HABITS</div>';
-    hbMatch.forEach(h => { html += `<div class="search-result-item" onclick="closeSearch(); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector('.nav-item[data-view=habits]').classList.add('active'); currentView='habits'; renderView();"><div class="search-result-title">${escapeHtml(h.name)}</div><div class="search-result-meta">🔥 ${h.streak} streak • ${h.frequency}</div></div>`; });
-  }
-  
-  if (!html) html = '<div class="search-no-results">No results found</div>';
-  searchResults.innerHTML = html;
+  if (hbMatch.length > 0) { html += '<div class="search-group-header">HABITS</div>'; hbMatch.forEach(h => { html += `<div class="search-result-item" onclick="closeSearch(); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector('.nav-item[data-view=habits]').classList.add('active'); currentView='habits'; renderView();"><div class="search-result-title">${escapeHtml(h.name)}</div><div class="search-result-meta">🔥 ${h.streak} streak • ${h.frequency}</div></div>`; }); }
+  if (!html) html = '<div class="search-no-results">No results found</div>'; searchResults.innerHTML = html;
 });
 
+async function checkGoogleAuthStatus() {
+  try {
+    const res = await fetch(BACKEND_URL + "/auth/status", { headers: { "x-api-token": API_TOKEN } });
+    const data = await res.json();
+    googleConnected = data.connected;
+    if (googleConnected) fetchGoogleEvents();
+    updateGoogleStatusUI();
+  } catch (e) { googleConnected = false; }
+}
+
+async function fetchGoogleEvents() {
+  try {
+    const res = await fetch(BACKEND_URL + "/calendar/events", { headers: { "x-api-token": API_TOKEN } });
+    const data = await res.json();
+    if (data.success) { googleEvents = data.events; renderView(); }
+  } catch (e) { googleEvents = []; }
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get("google_auth") === "success") { showPill("Google Calendar connected"); googleConnected = true; fetchGoogleEvents(); window.history.replaceState({}, document.title, window.location.pathname); } 
+else if (urlParams.get("google_auth") === "error") { showPill("Google connection failed — try again"); window.history.replaceState({}, document.title, window.location.pathname); }
+
 renderView();
+checkGoogleAuthStatus();
 
 </script>
 </body>
