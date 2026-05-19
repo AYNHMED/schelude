@@ -245,7 +245,8 @@ async def store_memory(content: str, metadata: dict, namespace: str = "schelude"
         return
     try:
         mem_id = make_memory_id(content)
-        url = f"{UPSTASH_VECTOR_URL}/upsert"
+        base_url = UPSTASH_VECTOR_URL if UPSTASH_VECTOR_URL.startswith("http") else f"https://{UPSTASH_VECTOR_URL}"
+        url = f"{base_url}/upsert"
         headers = {
             "Authorization": f"Bearer {UPSTASH_VECTOR_TOKEN}",
             "Content-Type": "application/json",
@@ -269,7 +270,8 @@ async def retrieve_memories(query: str, top_k: int = 8) -> list:
     if not UPSTASH_VECTOR_URL or not UPSTASH_VECTOR_TOKEN:
         return []
     try:
-        url = f"{UPSTASH_VECTOR_URL}/query"
+        base_url = UPSTASH_VECTOR_URL if UPSTASH_VECTOR_URL.startswith("http") else f"https://{UPSTASH_VECTOR_URL}"
+        url = f"{base_url}/query"
         headers = {
             "Authorization": f"Bearer {UPSTASH_VECTOR_TOKEN}",
             "Content-Type": "application/json",
@@ -441,7 +443,7 @@ async def call_gemini(message: str, history: list, context: dict, system_prompt:
         contents.append({"role": "user", "parts": [{"text": message}]})
 
         payload = {
-            "system_instruction": {"parts": [{"text": system_prompt}]},
+            "systemInstruction": {"parts": [{"text": system_prompt}]},
             "contents": contents,
             "generationConfig": {"temperature": 0.7, "maxOutputTokens": 1024},
         }
