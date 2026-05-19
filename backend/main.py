@@ -2,10 +2,13 @@ import os
 import re
 import json
 import time
+import asyncio
 import logging
 from contextlib import asynccontextmanager
+from typing import Optional, List
 
 import httpx
+import google.generativeai as genai
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlencode
 
@@ -26,30 +29,35 @@ UPSTASH_REDIS_REST_URL = os.getenv("UPSTASH_REDIS_REST_URL")
 UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 API_TOKEN = os.getenv("API_TOKEN")
 ALLOWED_ORIGIN = os.getenv("ALLOWED_ORIGIN", "https://your-cloudflare-pages-url.pages.dev")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-SYSTEM_PROMPT = (
-    "You are a planner agent for an app called Schelude. The user types anything\n"
-    "related to their schedule, tasks, or events in plain English. Parse it and\n"
-    "return ONLY a valid JSON object — no markdown, no explanation, nothing else.\n"
-    "\n"
-    "Return this exact shape:\n"
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+
+PARSE_SYSTEM_PROMPT = (
+    "Extract scheduling intent from user input. Return JSON only, no other text. Schema:\n"
     "{\n"
-    "  type: event | task,\n"
-    "  title: short clean title max 6 words,\n"
-    "  tag: test | homework | school | extracurricular | work | event,\n"
-    "  day: number or null (day of current month),\n"
-    "  time: H:MM AM/PM or null,\n"
-    "  due: human-readable due string or null\n"
+    "  type: 'event'|'task'|'habit'|'none',\n"
+    "  title: string,\n"
+    "  date: 'YYYY-MM-DD' or null,\n"
+    "  time: 'HH:MM' or null,\n"
+    "  category: 'school'|'work'|'health'|'life'|'social'|'self-improvement',\n"
+    "  priority: 'urgent'|'high'|'normal'|'low',\n"
+    "  recurrence: 'daily'|'weekly'|'monthly'|'yearly'|null,\n"
+    "  recurrence_days: ['mon','tue','wed','thu','fri','sat','sun'] or null,\n"
+    "  recurrence_end: 'YYYY-MM-DD' or null,\n"
+    "  recurrence_count: number or null,\n"
+    "  duration_minutes: number or null,\n"
+    "  notes: string or null\n"
     "}\n"
-    "\n"
-    "Rules:\n"
-    "- If input has a specific time, type is event\n"
-    "- If input is a to-do with no time, type is task\n"
-    "- Infer day numbers from context relative to today\n"
-    "- due is only for tasks, written like Thursday or Apr 18\n"
-    "- Tag inference: test/exam/quiz=test, finish/write/read/outline=homework,\n"
-    "  class/period/AP=school, club/practice/team=extracurricular\n"
-    "- Never return anything except the JSON object"
+    "Category detection:\n"
+    "school = homework, test, exam, quiz, project, essay, study, class, lecture, final, assignment\n"
+    "work = meeting, deadline, presentation, report, interview, client\n"
+    "health = workout, gym, run, walk, doctor, medication, sleep, meal prep, diet\n"
+    "life = birthday, appointment, errand, shopping, travel, bill, chores\n"
+    "social = party, hangout, date, call, dinner, wedding, event\n"
+    "self-improvement = habit, read, meditate, journal, practice, learn, course\n"
+    "If no scheduling intent return {\"type\": \"none\"}."
 )
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
@@ -87,7 +95,7 @@ http_client: httpx.AsyncClient = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global http_client
-    http_client = httpx.AsyncClient(timeout=5.0)
+    http_client = httpx.AsyncClient(timeout=15.0)
     yield
     await http_client.aclose()
 
@@ -98,7 +106,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[ALLOWED_ORIGIN, "http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -107,16 +115,36 @@ class ParseRequest(BaseModel):
     text: str
 
 
+class ChatMessage(BaseModel):
+    role: str
+    parts: str
+
+
+class ChatContext(BaseModel):
+    events: list = []
+    tasks: list = []
+    habits: list = []
+
+
+class ChatRequest(BaseModel):
+    message: str
+    history: List[ChatMessage] = []
+    context: ChatContext = ChatContext()
+
+
 class CreateEventRequest(BaseModel):
     title: str
     date: str
-    time: str | None = None
-    description: str | None = None
-    reminder_minutes: int | None = None
+    time: Optional[str] = None
+    description: Optional[str] = None
+    reminder_minutes: Optional[int] = None
+    recurrence: Optional[str] = None
+    recurrence_days: Optional[List[str]] = None
+    recurrence_end: Optional[str] = None
+    recurrence_count: Optional[int] = None
 
 
 async def check_rate_limit(ip: str) -> bool:
-    """Sliding window rate limit via Upstash Redis REST pipeline. Fail-open if Redis is unavailable."""
     if not UPSTASH_REDIS_REST_URL or not UPSTASH_REDIS_REST_TOKEN:
         return True
 
@@ -124,7 +152,6 @@ async def check_rate_limit(ip: str) -> bool:
     now_ms = int(time.time() * 1000)
     cutoff_ms = now_ms - RATE_LIMIT_WINDOW_MS
 
-    # Pipeline: clean expired entries → add current → count → set TTL
     pipeline = [
         ["ZREMRANGEBYSCORE", key, 0, cutoff_ms],
         ["ZADD", key, now_ms, str(now_ms)],
@@ -143,7 +170,7 @@ async def check_rate_limit(ip: str) -> bool:
         )
         resp.raise_for_status()
         results = resp.json()
-        count = results[2]["result"]  # ZCARD result (includes current request)
+        count = results[2]["result"]
         return count <= RATE_LIMIT_MAX
     except Exception as exc:
         logger.warning("Upstash unavailable, failing open: %s", exc)
@@ -193,7 +220,6 @@ async def get_valid_access_token():
 def sanitize_input(text: str) -> str:
     text = text[:500]
     text = re.sub(r"<[^>]+>", "", text)
-    # Truncate at characters that could break system-prompt boundaries or inject instructions
     text = re.split(r"[\n\r\x00\x1a`]", text)[0]
     return text.strip()
 
@@ -205,28 +231,24 @@ async def health():
 
 @app.post("/parse")
 async def parse(request: Request, body: ParseRequest):
-    # 1. API token check — do not proceed to Groq if this fails
     token = request.headers.get("x-api-token")
     if not token or token != API_TOKEN:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    # 2. Rate limit — sliding window per IP
     forwarded_for = request.headers.get("x-forwarded-for", "")
     ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.client.host
     if not await check_rate_limit(ip):
         return JSONResponse(status_code=429, content={"error": "rate limit exceeded"})
 
-    # 3. Input sanitization
     text = sanitize_input(body.text)
     if not text:
         return JSONResponse(status_code=400, content={"error": "invalid input"})
 
-    # 4. Groq call
     try:
         completion = await groq_client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": PARSE_SYSTEM_PROMPT},
                 {"role": "user", "content": text},
             ],
             max_tokens=300,
@@ -237,11 +259,9 @@ async def parse(request: Request, body: ParseRequest):
         logger.error("Groq API error: %s", exc)
         return JSONResponse(content={"success": False, "error": "Failed to reach language model"})
 
-    # 5. JSON validation — never pass raw unparsed output to the frontend
     try:
         parsed = json.loads(raw)
     except json.JSONDecodeError:
-        # One recovery attempt: find the first {...} block in the response
         match = re.search(r"\{.*\}", raw, re.DOTALL)
         if match:
             try:
@@ -252,6 +272,102 @@ async def parse(request: Request, body: ParseRequest):
             return JSONResponse(content={"success": False, "error": "Model returned invalid JSON"})
 
     return {"success": True, "data": parsed}
+
+
+async def run_groq_parser(text: str):
+    try:
+        completion = await groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": PARSE_SYSTEM_PROMPT},
+                {"role": "user", "content": text},
+            ],
+            max_tokens=300,
+            temperature=0.1,
+        )
+        raw = completion.choices[0].message.content
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            match = re.search(r"\{.*\}", raw, re.DOTALL)
+            if match:
+                return json.loads(match.group())
+        return None
+    except Exception as exc:
+        logger.error("Groq parser error: %s", exc)
+        return None
+
+
+async def run_gemini_chat(message: str, history: List[ChatMessage], context: ChatContext) -> str:
+    if not GEMINI_API_KEY:
+        return "I've processed your request. Check your tasks and calendar for updates."
+    try:
+        event_titles = [e.get("title", "") for e in context.events[:5] if isinstance(e, dict)]
+        task_titles = [t.get("title", "") for t in context.tasks[:5] if isinstance(t, dict)]
+        system_prompt = (
+            "You are Schelude, an intelligent AI planning assistant embedded in a productivity app. "
+            "You help users manage school, work, health, life, social, and self-improvement goals.\n\n"
+            f"Current user context:\n"
+            f"- Events this month: {len(context.events)} events\n"
+            f"- Active tasks: {len(context.tasks)} tasks\n"
+            f"- Habits tracked: {len(context.habits)} habits\n"
+            f"- Recent events: {', '.join(event_titles) if event_titles else 'none'}\n"
+            f"- Active tasks: {', '.join(task_titles) if task_titles else 'none'}\n\n"
+            "Behavior rules:\n"
+            "1. Be concise and warm. Max 4 sentences for simple requests.\n"
+            "2. For study/work requests: give 3-5 specific actionable bullet points.\n"
+            "3. For scheduling: confirm what was added and ask one relevant follow-up.\n"
+            "4. For recurring events: confirm the schedule and end date.\n"
+            "5. For advice: be specific to the subject/topic mentioned.\n"
+            "6. Never say you cannot help. Always provide value.\n"
+            "7. Use markdown bold (**text**) for key terms and action items.\n"
+            "8. If the user seems stressed, acknowledge it briefly before advice.\n"
+            "9. For 'cram' requests: provide a time-boxed study plan with breaks.\n"
+            "10. For health/wellness: give science-backed brief recommendations."
+        )
+        gemini_history = []
+        for msg in history:
+            gemini_history.append({
+                "role": msg.role,
+                "parts": [{"text": msg.parts}]
+            })
+        model = genai.GenerativeModel(
+            model_name="gemini-2.0-flash-exp",
+            system_instruction=system_prompt
+        )
+        chat = model.start_chat(history=gemini_history)
+        response = await asyncio.to_thread(chat.send_message, message)
+        return response.text
+    except Exception as exc:
+        logger.error("Gemini error: %s", exc)
+        return "I've processed your request. Check your tasks and calendar for updates."
+
+
+@app.post("/chat")
+async def chat(request: Request, body: ChatRequest):
+    token = request.headers.get("x-api-token")
+    if not token or token != API_TOKEN:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    forwarded_for = request.headers.get("x-forwarded-for", "")
+    ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.client.host
+    if not await check_rate_limit(ip):
+        return JSONResponse(status_code=429, content={"error": "rate limit exceeded"})
+
+    text = sanitize_input(body.message)
+    if not text:
+        return JSONResponse(status_code=400, content={"error": "invalid input"})
+
+    parsed_result, gemini_response = await asyncio.gather(
+        run_groq_parser(text),
+        run_gemini_chat(text, body.history, body.context)
+    )
+
+    return {
+        "action": parsed_result,
+        "response": gemini_response,
+        "success": True
+    }
 
 
 @app.get("/auth/google")
@@ -381,6 +497,26 @@ async def get_calendar_events(request: Request):
     return {"success": True, "events": events}
 
 
+def build_rrule(body: CreateEventRequest) -> list:
+    if not body.recurrence:
+        return []
+    day_map = {"mon": "MO", "tue": "TU", "wed": "WE", "thu": "TH", "fri": "FR", "sat": "SA", "sun": "SU"}
+    freq_map = {"daily": "DAILY", "weekly": "WEEKLY", "monthly": "MONTHLY", "yearly": "YEARLY"}
+    freq = freq_map.get(body.recurrence)
+    if not freq:
+        return []
+    rule = f"RRULE:FREQ={freq}"
+    if body.recurrence == "weekly" and body.recurrence_days:
+        days = ",".join(day_map.get(d.lower(), d.upper()) for d in body.recurrence_days)
+        rule += f";BYDAY={days}"
+    if body.recurrence_end:
+        until = body.recurrence_end.replace("-", "") + "T000000Z"
+        rule += f";UNTIL={until}"
+    if body.recurrence_count:
+        rule += f";COUNT={body.recurrence_count}"
+    return [rule]
+
+
 @app.post("/calendar/events")
 async def create_calendar_event(request: Request, body: CreateEventRequest):
     token = request.headers.get("x-api-token")
@@ -410,6 +546,10 @@ async def create_calendar_event(request: Request, body: CreateEventRequest):
             "useDefault": False,
             "overrides": [{"method": "popup", "minutes": body.reminder_minutes}],
         }
+
+    rrule = build_rrule(body)
+    if rrule:
+        event_body["recurrence"] = rrule
 
     resp = await http_client.post(
         f"{GOOGLE_CALENDAR_BASE}/calendars/primary/events",
