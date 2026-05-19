@@ -8,7 +8,6 @@ from contextlib import asynccontextmanager
 from typing import Optional, List
 
 import httpx
-import google.generativeai as genai
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlencode
 
@@ -30,9 +29,6 @@ UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 API_TOKEN = os.getenv("API_TOKEN")
 ALLOWED_ORIGIN = os.getenv("ALLOWED_ORIGIN", "https://your-cloudflare-pages-url.pages.dev")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
 
 PARSE_SYSTEM_PROMPT = (
     "Extract scheduling intent from user input. Return JSON only, no other text. Schema:\n"
@@ -298,49 +294,45 @@ async def run_groq_parser(text: str):
         return None
 
 
-async def run_gemini_chat(message: str, history: List[ChatMessage], context: ChatContext) -> str:
+async def call_gemini(message: str, history: list, context: dict, system_prompt: str) -> str:
     if not GEMINI_API_KEY:
-        return "I've processed your request. Check your tasks and calendar for updates."
+        return "Gemini API key not configured. Add GEMINI_API_KEY to your environment variables."
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+
+    contents = []
+    for h in history[-20:]:
+        role = h.get("role", "user")
+        # Gemini only accepts 'user' or 'model'
+        if role not in ("user", "model"):
+            role = "user"
+        contents.append({
+            "role": role,
+            "parts": [{"text": h.get("parts", "")}]
+        })
+    contents.append({"role": "user", "parts": [{"text": message}]})
+
+    payload = {
+        "system_instruction": {"parts": [{"text": system_prompt}]},
+        "contents": contents,
+        "generationConfig": {
+            "temperature": 0.7,
+            "maxOutputTokens": 1024
+        }
+    }
+
     try:
-        event_titles = [e.get("title", "") for e in context.events[:5] if isinstance(e, dict)]
-        task_titles = [t.get("title", "") for t in context.tasks[:5] if isinstance(t, dict)]
-        system_prompt = (
-            "You are Schelude, an intelligent AI planning assistant embedded in a productivity app. "
-            "You help users manage school, work, health, life, social, and self-improvement goals.\n\n"
-            f"Current user context:\n"
-            f"- Events this month: {len(context.events)} events\n"
-            f"- Active tasks: {len(context.tasks)} tasks\n"
-            f"- Habits tracked: {len(context.habits)} habits\n"
-            f"- Recent events: {', '.join(event_titles) if event_titles else 'none'}\n"
-            f"- Active tasks: {', '.join(task_titles) if task_titles else 'none'}\n\n"
-            "Behavior rules:\n"
-            "1. Be concise and warm. Max 4 sentences for simple requests.\n"
-            "2. For study/work requests: give 3-5 specific actionable bullet points.\n"
-            "3. For scheduling: confirm what was added and ask one relevant follow-up.\n"
-            "4. For recurring events: confirm the schedule and end date.\n"
-            "5. For advice: be specific to the subject/topic mentioned.\n"
-            "6. Never say you cannot help. Always provide value.\n"
-            "7. Use markdown bold (**text**) for key terms and action items.\n"
-            "8. If the user seems stressed, acknowledge it briefly before advice.\n"
-            "9. For 'cram' requests: provide a time-boxed study plan with breaks.\n"
-            "10. For health/wellness: give science-backed brief recommendations."
-        )
-        gemini_history = []
-        for msg in history:
-            gemini_history.append({
-                "role": msg.role,
-                "parts": [{"text": msg.parts}]
-            })
-        model = genai.GenerativeModel(
-            model_name="gemini-2.0-flash-exp",
-            system_instruction=system_prompt
-        )
-        chat = model.start_chat(history=gemini_history)
-        response = await asyncio.to_thread(chat.send_message, message)
-        return response.text
-    except Exception as exc:
-        logger.error("Gemini error: %s", exc)
-        return "I've processed your request. Check your tasks and calendar for updates."
+        resp = await http_client.post(url, json=payload, timeout=30.0)
+        data = resp.json()
+        if "candidates" in data and data["candidates"]:
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        elif "error" in data:
+            logger.error("Gemini API error: %s", data["error"])
+            return f"Gemini error: {data['error'].get('message', 'unknown')}"
+        return "I'm having trouble responding right now. Your item was still added to your planner."
+    except Exception as e:
+        logger.error("Gemini connection error: %s", e)
+        return f"Connection error: {str(e)}"
 
 
 @app.post("/chat")
@@ -358,9 +350,48 @@ async def chat(request: Request, body: ChatRequest):
     if not text:
         return JSONResponse(status_code=400, content={"error": "invalid input"})
 
+    context = body.context.__dict__ if hasattr(body.context, '__dict__') else {}
+    event_titles = ', '.join([e.get('title', '') for e in body.context.events[:5] if isinstance(e, dict)]) or 'none'
+    task_titles  = ', '.join([t.get('title', '') for t in body.context.tasks[:5]  if isinstance(t, dict)]) or 'none'
+
+    system_prompt = f"""You are Schelude, an intelligent AI assistant built into a productivity app.
+You have full access to the user's schedule and can help with anything.
+
+USER'S CURRENT DATA:
+- Events this month: {len(body.context.events)}
+- Active tasks: {len(body.context.tasks)}
+- Habits tracked: {len(body.context.habits)}
+- Recent events: {event_titles}
+- Active tasks: {task_titles}
+
+You are like ChatGPT but embedded in a planner. You can:
+1. Schedule events and tasks (confirm when you do)
+2. Give detailed study plans, advice, tips
+3. Help plan weeks, months, projects
+4. Answer questions about any topic
+5. Give health, wellness, self-improvement advice
+6. Help with school subjects (explain concepts, give study strategies)
+
+RESPONSE RULES:
+- Be conversational, warm, and genuinely helpful
+- For study requests: give a specific day-by-day or week-by-week plan
+- For scheduling: confirm what was added with specifics
+- For advice: give 4-6 concrete actionable bullet points
+- For questions: answer fully like a knowledgeable friend
+- Use **bold** for key terms
+- Keep responses under 200 words unless a detailed plan is needed
+- Never give a generic fallback response
+- Always acknowledge what the user said specifically
+
+If the user asks to study for a physics final: give a 2-week study plan broken into topics.
+If the user asks about recurring events: confirm the schedule.
+If the user asks anything else: help them fully."""
+
+    history_dicts = [{"role": m.role, "parts": m.parts} for m in body.history]
+
     parsed_result, gemini_response = await asyncio.gather(
         run_groq_parser(text),
-        run_gemini_chat(text, body.history, body.context)
+        call_gemini(text, history_dicts, context, system_prompt)
     )
 
     return {

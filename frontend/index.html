@@ -318,7 +318,7 @@
   @keyframes searchSlideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   @keyframes fireFlicker { 0%, 100% { text-shadow: 0 0 6px var(--accent-glow); } 50% { text-shadow: 0 0 12px #F5A524, 0 0 24px #F75A5A; } }
 
-  #bg-canvas { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  #bg-canvas { display: none !important; }
   #sidebar, #main { position: relative; z-index: 1; }
   body { background: #000 !important; }
 
@@ -431,7 +431,7 @@ input:checked + .slider:before { background-color: #A855F7 !important; }
 .streak-badge { color: #A855F7 !important; }
 .pomodoro-display { color: #A855F7 !important; text-shadow: 0 0 20px rgba(168,85,247,0.5); }
 .status-pill { background: linear-gradient(135deg, #7C3AED, #A855F7) !important; box-shadow: 0 0 20px rgba(168,85,247,0.4) !important; }
-#bg-canvas { display: block; }
+#bg-canvas { display: none !important; }
 body { background: #03000A !important; }
 
 /* Change 5: Typography */
@@ -1289,6 +1289,13 @@ function renderView() {
         if (dNum !== null) addToDay(dNum, entry);
       }
     });
+    // Tasks with a dueDate — show as dashed-border chips on the calendar
+    tasks.filter(t => !t.done && t.dueDate).forEach((tk, i) => {
+      const d = new Date(tk.dueDate + 'T12:00:00');
+      if (!isNaN(d.getTime()) && d.getMonth() === month && d.getFullYear() === year) {
+        addToDay(d.getDate(), { ev: { title: '◻ ' + tk.title, tag: tk.project || 'inbox' }, type: 'task', index: tasks.indexOf(tk) });
+      }
+    });
     if (googleConnected) { googleEvents.forEach(gev => { if (gev.start) { const d = new Date(gev.start); if (!isNaN(d.getTime()) && d.getMonth() === month && d.getFullYear() === year) { const dNum = d.getDate(); if(!eventsByDay[dNum]) eventsByDay[dNum] = []; eventsByDay[dNum].push({ ev: gev, type: 'google' }); } } }); }
 
     for (let i = firstDay - 1; i >= 0; i--) { const d = document.createElement('div'); d.className = 'cal-full-cell other-month'; d.innerHTML = `<div class="cal-cell-num">${prevMonthDays - i}</div>`; calFullGrid.appendChild(d); }
@@ -1297,7 +1304,8 @@ function renderView() {
       const dayEvs = eventsByDay[i] || []; const showCount = Math.min(dayEvs.length, 3);
       for(let j=0; j<showCount; j++) {
         const item = dayEvs[j]; const chip = document.createElement('div'); chip.className = 'cal-cell-event';
-        if (item.type === 'local') { const tObj = TAG_COLORS[item.ev.tag] || TAG_COLORS.event; chip.style.backgroundColor = hexToRgba(tObj.dot, 0.2); chip.style.color = tObj.dot; chip.textContent = item.ev.title; chip.onclick = (e) => { e.stopPropagation(); openEditEvent(item.index); }; } 
+        if (item.type === 'local') { const tObj = TAG_COLORS[item.ev.tag] || TAG_COLORS.event; chip.style.backgroundColor = hexToRgba(tObj.dot, 0.2); chip.style.color = tObj.dot; chip.textContent = item.ev.title; chip.onclick = (e) => { e.stopPropagation(); openEditEvent(item.index); }; }
+        else if (item.type === 'task') { const tObj = TAG_COLORS[item.ev.tag] || TAG_COLORS.event; chip.style.backgroundColor = 'transparent'; chip.style.color = tObj.dot; chip.style.border = `1px dashed ${tObj.dot}`; chip.textContent = item.ev.title; chip.onclick = (e) => { e.stopPropagation(); openEditTask(item.index); }; }
         else { chip.style.backgroundColor = hexToRgba('#4285F4', 0.2); chip.style.color = '#4285F4'; chip.textContent = item.ev.title; }
         d.appendChild(chip);
       }
@@ -1803,14 +1811,42 @@ function parseMd(text) {
 }
 
 function addItemFromAction(result) {
-  if (!result || result.type === 'none') return null;
+  if (!result || result.type === 'none' || !result.title) return null;
   if (result.type === 'event') {
-    const newEvent = { id: Date.now(), title: result.title, day: result.date ? new Date(result.date + 'T12:00:00').getDate() : null, time: result.time || null, tag: result.category || 'life', priority: result.priority || 'normal', recurrence: result.recurrence || null, recurrence_days: result.recurrence_days || null, recurrence_end: result.recurrence_end || null, notes: result.notes || null };
+    const newEvent = {
+      id: Date.now(), title: result.title,
+      day: result.date ? new Date(result.date + 'T12:00:00').getDate() : null,
+      date: result.date || null,
+      time: result.time || null, tag: result.category || 'life',
+      priority: result.priority || 'normal',
+      recurrence: result.recurrence || null,
+      recurrence_days: result.recurrence_days || null,
+      recurrence_end: result.recurrence_end || null,
+      notes: result.notes || null
+    };
     events.push(newEvent); saveState(); renderView(); return 'Events';
   }
   if (result.type === 'task') {
-    const newTask = { id: Date.now(), title: result.title, done: false, project: result.category || 'inbox', priority: result.priority || 'normal', dueDate: result.date || null, recurrence: result.recurrence || null, notes: result.notes || null, subtasks: [] };
+    const newTask = {
+      id: Date.now(), title: result.title, done: false,
+      project: result.category || 'inbox',
+      priority: result.priority || 'normal',
+      dueDate: result.date || null,
+      recurrence: result.recurrence || null,
+      notes: result.notes || null, subtasks: []
+    };
     tasks.push(newTask); saveState(); renderView(); return 'Tasks';
+  }
+  if (result.type === 'habit') {
+    const newHabit = {
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      name: result.title,
+      color: '#A855F7',
+      frequency: result.recurrence === 'weekly' ? 'weekly' : 'daily',
+      completions: [], streak: 0,
+      createdAt: new Date().toISOString()
+    };
+    habits.push(newHabit); saveHabits(); renderView(); return 'Habits';
   }
   return null;
 }
@@ -1978,43 +2014,10 @@ document.querySelectorAll('.btn-primary, .home-cta, #submit-btn').forEach(btn =>
   });
 });
 
-// ── bg-canvas breathing gradient ──────────────────────────────────────────────
+// ── bg-canvas disabled ────────────────────────────────────────────────────────
 (function() {
   const canvas = document.getElementById('bg-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, frame = 0;
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize); resize();
-  function draw() {
-    requestAnimationFrame(draw); frame++;
-    const t = frame * 0.006;
-    const breathe = 0.5 + 0.5 * Math.sin(t * 0.65);
-    ctx.clearRect(0, 0, W, H);
-    // Purple blob — drifts gently
-    const px = W * 0.28 + Math.sin(t * 0.45) * W * 0.14;
-    const py = H * 0.38 + Math.cos(t * 0.38) * H * 0.12;
-    const g1 = ctx.createRadialGradient(px, py, 0, px, py, W * (0.26 + breathe * 0.13));
-    g1.addColorStop(0, `rgba(168,85,247,${(0.055 + breathe * 0.04).toFixed(3)})`);
-    g1.addColorStop(0.5, `rgba(124,58,237,${(0.02 + breathe * 0.015).toFixed(3)})`);
-    g1.addColorStop(1, 'rgba(168,85,247,0)');
-    ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
-    // Cyan blob — counter-drifts
-    const cx = W * 0.72 + Math.sin(t * 0.32 + 1.8) * W * 0.13;
-    const cy = H * 0.62 + Math.cos(t * 0.48 + 2.3) * H * 0.11;
-    const g2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * (0.2 + breathe * 0.09));
-    g2.addColorStop(0, `rgba(6,182,212,${(0.04 + breathe * 0.03).toFixed(3)})`);
-    g2.addColorStop(1, 'rgba(6,182,212,0)');
-    ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
-    // Accent bloom at top-center
-    const bx = W * 0.5 + Math.sin(t * 0.28) * W * 0.08;
-    const by = H * 0.12 + Math.cos(t * 0.34) * H * 0.06;
-    const g3 = ctx.createRadialGradient(bx, by, 0, bx, by, W * (0.15 + breathe * 0.07));
-    g3.addColorStop(0, `rgba(192,132,252,${(0.03 + breathe * 0.02).toFixed(3)})`);
-    g3.addColorStop(1, 'rgba(192,132,252,0)');
-    ctx.fillStyle = g3; ctx.fillRect(0, 0, W, H);
-  }
-  draw();
+  if (canvas) canvas.style.display = 'none';
 })();
 
 // ── Ambient audio helpers ────────────────────────────────────────────────────
