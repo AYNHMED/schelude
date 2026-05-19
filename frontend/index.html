@@ -816,12 +816,16 @@ else if (density === 'comfortable') { document.documentElement.style.setProperty
 else { document.documentElement.style.setProperty('--card-padding', '14px'); document.documentElement.style.setProperty('--card-gap', '12px'); }
 
 const TAG_COLORS = {
-  test:            { dot: '#F75A5A', bg: 'rgba(247,90,90,0.1)',  text: '#F75A5A', border: 'rgba(247,90,90,0.3)' },
-  homework:        { dot: '#A855F7', bg: 'rgba(168, 85, 247,0.1)', text: '#A855F7', border: 'rgba(168, 85, 247,0.3)' },
-  school:          { dot: '#2DD4BF', bg: 'rgba(45,212,191,0.1)', text: '#2DD4BF', border: 'rgba(45,212,191,0.3)' },
-  extracurricular: { dot: '#3DD68C', bg: 'rgba(61,214,140,0.1)', text: '#3DD68C', border: 'rgba(61,214,140,0.3)' },
-  work:            { dot: '#F5A524', bg: 'rgba(245,165,36,0.1)', text: '#F5A524', border: 'rgba(245,165,36,0.3)' },
-  event:           { dot: '#7C3AED', bg: 'rgba(124,92,252,0.1)', text: '#7C3AED', border: 'rgba(124,92,252,0.3)' }
+  test:             { dot: '#F75A5A', bg: 'rgba(247,90,90,0.1)',   text: '#F75A5A', border: 'rgba(247,90,90,0.3)' },
+  homework:         { dot: '#A855F7', bg: 'rgba(168,85,247,0.1)',  text: '#A855F7', border: 'rgba(168,85,247,0.3)' },
+  school:           { dot: '#A855F7', bg: 'rgba(168,85,247,0.1)',  text: '#A855F7', border: 'rgba(168,85,247,0.3)' },
+  extracurricular:  { dot: '#3DD68C', bg: 'rgba(61,214,140,0.1)', text: '#3DD68C', border: 'rgba(61,214,140,0.3)' },
+  work:             { dot: '#F5A524', bg: 'rgba(245,165,36,0.1)', text: '#F5A524', border: 'rgba(245,165,36,0.3)' },
+  health:           { dot: '#3DD68C', bg: 'rgba(61,214,140,0.1)', text: '#3DD68C', border: 'rgba(61,214,140,0.3)' },
+  life:             { dot: '#F472B6', bg: 'rgba(244,114,182,0.1)', text: '#F472B6', border: 'rgba(244,114,182,0.3)' },
+  social:           { dot: '#EC4899', bg: 'rgba(236,72,153,0.1)', text: '#EC4899', border: 'rgba(236,72,153,0.3)' },
+  'self-improvement':{ dot: '#2DD4BF', bg: 'rgba(45,212,191,0.1)', text: '#2DD4BF', border: 'rgba(45,212,191,0.3)' },
+  event:            { dot: '#7C3AED', bg: 'rgba(124,92,252,0.1)', text: '#7C3AED', border: 'rgba(124,92,252,0.3)' }
 };
 customTags.forEach(t => { TAG_COLORS[t.name] = { dot: t.color, bg: hexToRgba(t.color, 0.1), text: t.color, border: hexToRgba(t.color, 0.3) }; });
 
@@ -908,8 +912,11 @@ function buildTaskCard(tk, i, onToggle, onRemove, onEdit) {
     const total = tk.subtasks.length; const done = tk.subtasks.filter(s => s.done).length; const pct = (done / total) * 100;
     subtasksHtml = `<div class="task-progress"><div>${done} / ${total}</div><div class="task-progress-bar"><div class="task-progress-fill" style="width: ${pct}%"></div></div></div>`;
   }
+  const CATEGORY_COLORS = { school: '#A855F7', work: '#F5A524', health: '#3DD68C', life: '#F472B6', social: '#EC4899', 'self-improvement': '#2DD4BF', inbox: '#5A7090' };
   let projectHtml = ''; const proj = projects.find(p => p.id === (tk.project || 'inbox'));
-  if (proj) projectHtml = `<div class="task-project"><div class="project-dot" style="background: ${proj.color}; color: ${proj.color}"></div> ${escapeHtml(proj.name)}</div>`;
+  const catColor = CATEGORY_COLORS[tk.project] || (proj ? proj.color : '#5A7090');
+  if (proj) projectHtml = `<div class="task-project"><div class="project-dot" style="background: ${catColor}; color: ${catColor}; box-shadow: 0 0 4px ${catColor}88;"></div> ${escapeHtml(proj.name)}</div>`;
+  else if (tk.project && tk.project !== 'inbox') { const cc = CATEGORY_COLORS[tk.project] || '#A855F7'; projectHtml = `<div class="task-project"><div class="project-dot" style="background: ${cc}; color: ${cc}; box-shadow: 0 0 4px ${cc}88;"></div> ${escapeHtml(tk.project)}</div>`; }
   let recurrenceHtml = '';
   if (tk.recurrence && tk.recurrence !== 'none') { const rMap = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly' }; recurrenceHtml = `<div style="font-size: 10px; color: var(--muted); margin-top: 2px;">↻ ${rMap[tk.recurrence]}</div>`; }
 
@@ -1028,27 +1035,63 @@ window.setTaskProjectFilter = function(id) { taskFilterProject = id; renderView(
 
 
 function renderPomodoro() {
-  const display = document.getElementById('pomodoro-display'); const modeLbl = document.getElementById('pomodoro-mode'); const sessLbl = document.getElementById('pomodoro-session');
-  if (!display) return;
-  const m = Math.floor(pomodoroTimeLeft / 60); const s = pomodoroTimeLeft % 60; display.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  if (pomodoroMode === 'work') { modeLbl.textContent = 'DEEP WORK'; display.style.color = 'var(--accent)'; }
-  else if (pomodoroMode === 'short') { modeLbl.textContent = 'SHORT BREAK'; display.style.color = 'var(--green)'; }
-  else { modeLbl.textContent = 'LONG BREAK'; display.style.color = 'var(--teal)'; }
-  sessLbl.textContent = `Session ${pomodoroSession} of 4`;
+  const timeStr = `${Math.floor(pomodoroTimeLeft/60).toString().padStart(2,'0')}:${(pomodoroTimeLeft%60).toString().padStart(2,'0')}`;
+  const modeLabel = pomodoroMode === 'work' ? 'DEEP WORK' : pomodoroMode === 'short' ? 'SHORT BREAK' : 'LONG BREAK';
+  const modeColor = pomodoroMode === 'work' ? 'var(--accent)' : pomodoroMode === 'short' ? 'var(--green)' : '#06B6D4';
+  // Old planner widget elements
+  const display = document.getElementById('pomodoro-display');
+  if (display) { display.textContent = timeStr; display.style.color = modeColor; }
+  const modeLbl = document.getElementById('pomodoro-mode'); if (modeLbl) modeLbl.textContent = modeLabel;
+  const sessLbl = document.getElementById('pomodoro-session'); if (sessLbl) sessLbl.textContent = `Session ${pomodoroSession} of 4`;
+  // Focus mode ring elements
+  const fd = document.getElementById('focus-pomo-display');
+  if (fd) { fd.textContent = timeStr; fd.style.color = modeColor; }
+  const fl = document.getElementById('focus-pomo-label'); if (fl) fl.textContent = modeLabel;
+  const ring = document.getElementById('focus-pomo-ring');
+  if (ring) { ring.className = `pomo-ring ${pomodoroMode === 'work' ? 'work-mode' : pomodoroMode === 'short' ? 'short-mode' : 'long-mode'}`; }
 }
 
 function startPomodoro() {
-  clearInterval(pomodoroInterval);
+  if (pomodoroRunning) return;
+  pomodoroRunning = true;
   pomodoroInterval = setInterval(() => {
     pomodoroTimeLeft--;
     if (pomodoroTimeLeft <= 0) {
-      pomodoroRunning = false; clearInterval(pomodoroInterval); showPill("Session complete — take a break");
-      if (pomodoroMode === 'work') { if (pomodoroSession % 4 === 0) { pomodoroMode = 'long'; pomodoroTimeLeft = 15 * 60; } else { pomodoroMode = 'short'; pomodoroTimeLeft = 5 * 60; } } 
-      else { pomodoroMode = 'work'; pomodoroTimeLeft = 25 * 60; pomodoroSession++; }
-      const btn = document.getElementById('btn-pomo-start'); if (btn) btn.textContent = 'Start';
+      pomodoroRunning = false;
+      clearInterval(pomodoroInterval);
+      showPill('Session complete — take a break!');
+      pomodoroSession++;
+      if (pomodoroSession > 4) pomodoroSession = 1;
+      if (pomodoroMode === 'work') {
+        pomodoroMode = pomodoroSession === 1 ? 'long' : 'short';
+        pomodoroTimeLeft = pomodoroMode === 'long' ? 15 * 60 : 5 * 60;
+      } else {
+        pomodoroMode = 'work';
+        pomodoroTimeLeft = 25 * 60;
+      }
+      const startBtn = document.getElementById('btn-focus-pomo-start') || document.getElementById('btn-pomo-start');
+      if (startBtn) startBtn.textContent = 'Start';
+      renderPomodoro();
+      return;
     }
     renderPomodoro();
   }, 1000);
+  renderPomodoro();
+}
+
+function pausePomodoro() {
+  pomodoroRunning = false;
+  clearInterval(pomodoroInterval);
+  pomodoroInterval = null;
+  renderPomodoro();
+}
+
+function resetPomodoro() {
+  pausePomodoro();
+  pomodoroTimeLeft = 25 * 60;
+  pomodoroMode = 'work';
+  pomodoroSession = 1;
+  renderPomodoro();
 }
 
 function triggerPageAutosave() {
@@ -1449,16 +1492,12 @@ function renderView() {
 
     // Pomodoro
     document.getElementById('btn-focus-pomo-start').onclick = () => {
-      pomodoroRunning = !pomodoroRunning;
-      if (pomodoroRunning) startPomodoro(); else clearInterval(pomodoroInterval);
-      document.getElementById('btn-focus-pomo-start').textContent = pomodoroRunning ? 'Pause' : 'Start';
+      if (pomodoroRunning) { pausePomodoro(); document.getElementById('btn-focus-pomo-start').textContent = 'Start'; }
+      else { startPomodoro(); document.getElementById('btn-focus-pomo-start').textContent = 'Pause'; }
     };
     document.getElementById('btn-focus-pomo-reset').onclick = () => {
-      pomodoroRunning = false; clearInterval(pomodoroInterval);
-      pomodoroTimeLeft = pomodoroMode === 'work' ? 25*60 : pomodoroMode === 'short' ? 5*60 : 15*60;
+      resetPomodoro();
       document.getElementById('btn-focus-pomo-start').textContent = 'Start';
-      const d = document.getElementById('focus-pomo-display');
-      if (d) d.textContent = `${Math.floor(pomodoroTimeLeft/60).toString().padStart(2,'0')}:${(pomodoroTimeLeft%60).toString().padStart(2,'0')}`;
     };
 
     // Quick task add
@@ -1803,12 +1842,22 @@ ui.editModalSave.onclick = () => {
   saveState(); renderView(); closeEditModal();
 };
 
-function parseMd(text) {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>)/gs, m => '<ul>' + m + '</ul>');
+function renderAIText(text) {
+  if (!text) return '';
+  let html = escapeHtml(text);
+  // Bold **text**
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Bullet lists
+  html = html.replace(/^[-•]\s+(.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
+  // Paragraphs
+  html = html.replace(/\n\n+/g, '</p><p>');
+  html = html.replace(/\n/g, '<br>');
+  html = '<p>' + html + '</p>';
+  return html;
 }
+// Keep parseMd as alias for compatibility
+function parseMd(text) { return renderAIText(text); }
 
 function addItemFromAction(result) {
   if (!result || result.type === 'none' || !result.title) return null;
@@ -1880,12 +1929,58 @@ async function submitInput() {
     loader.remove();
 
     const aiBubble = document.createElement('div'); aiBubble.className = 'chat-bubble-ai';
-    aiBubble.innerHTML = parseMd(data.response || '');
+    aiBubble.innerHTML = renderAIText(data.response || '');
 
-    const addedTo = addItemFromAction(data.action);
-    if (addedTo) {
-      const tag = document.createElement('div'); tag.className = 'action-tag'; tag.textContent = `✓ Added to ${addedTo}`; aiBubble.appendChild(tag);
-      showPill(`Added to ${addedTo}`);
+    let actionLabel = null;
+    const action = data.action;
+    if (action && action.type && action.type !== 'none' && action.title) {
+      if (action.type === 'event') {
+        const ev = {
+          id: Date.now(),
+          title: action.title || 'New Event',
+          day: action.date ? new Date(action.date + 'T12:00:00').getDate() : new Date().getDate(),
+          month: action.date ? new Date(action.date + 'T12:00:00').getMonth() : new Date().getMonth(),
+          year: action.date ? new Date(action.date + 'T12:00:00').getFullYear() : new Date().getFullYear(),
+          date: action.date || null,
+          time: action.time || null,
+          tag: action.category || 'life',
+          priority: action.priority || 'normal',
+          recurrence: action.recurrence || null,
+          recurrence_days: action.recurrence_days || null,
+          recurrence_end: action.recurrence_end || null,
+          recurrence_count: action.recurrence_count || null,
+          notes: action.notes || null
+        };
+        events.push(ev); saveState(); renderView(); actionLabel = 'Events';
+      } else if (action.type === 'task') {
+        const tk = {
+          id: Date.now(),
+          title: action.title || 'New Task',
+          done: false,
+          project: action.category || 'inbox',
+          priority: action.priority || 'normal',
+          dueDate: action.date || null,
+          recurrence: action.recurrence || null,
+          notes: action.notes || null,
+          subtasks: []
+        };
+        tasks.push(tk); saveState(); renderView(); actionLabel = 'Tasks';
+      } else if (action.type === 'habit') {
+        const hb = {
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          name: action.title || 'New Habit',
+          color: '#A855F7',
+          frequency: action.recurrence === 'weekly' ? 'weekly' : 'daily',
+          completions: [],
+          streak: 0,
+          createdAt: new Date().toISOString()
+        };
+        habits.push(hb); saveHabits(); renderView(); actionLabel = 'Habits';
+      }
+    }
+    if (actionLabel) {
+      const tag = document.createElement('div'); tag.className = 'action-tag'; tag.textContent = `✓ Added to ${actionLabel}`; aiBubble.appendChild(tag);
+      showPill(`Added to ${actionLabel}`);
     }
 
     chatArea.appendChild(aiBubble);

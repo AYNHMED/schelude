@@ -296,9 +296,9 @@ async def run_groq_parser(text: str):
 
 async def call_gemini(message: str, history: list, context: dict, system_prompt: str) -> str:
     if not GEMINI_API_KEY:
-        return "Gemini API key not configured. Add GEMINI_API_KEY to your environment variables."
+        return "I'm not fully set up yet — ask the developer to configure me!"
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}"
 
     contents = []
     for h in history[-20:]:
@@ -328,11 +328,11 @@ async def call_gemini(message: str, history: list, context: dict, system_prompt:
             return data["candidates"][0]["content"]["parts"][0]["text"]
         elif "error" in data:
             logger.error("Gemini API error: %s", data["error"])
-            return f"Gemini error: {data['error'].get('message', 'unknown')}"
-        return "I'm having trouble responding right now. Your item was still added to your planner."
+            return "Hang tight, I'm thinking... Please try again in a moment."
+        return "I'm having a moment — please try again."
     except Exception as e:
         logger.error("Gemini connection error: %s", e)
-        return f"Connection error: {str(e)}"
+        return "Something went wrong on my end. Please try again."
 
 
 @app.post("/chat")
@@ -350,48 +350,71 @@ async def chat(request: Request, body: ChatRequest):
     if not text:
         return JSONResponse(status_code=400, content={"error": "invalid input"})
 
-    context = body.context.__dict__ if hasattr(body.context, '__dict__') else {}
     event_titles = ', '.join([e.get('title', '') for e in body.context.events[:5] if isinstance(e, dict)]) or 'none'
     task_titles  = ', '.join([t.get('title', '') for t in body.context.tasks[:5]  if isinstance(t, dict)]) or 'none'
 
-    system_prompt = f"""You are Schelude, an intelligent AI assistant built into a productivity app.
-You have full access to the user's schedule and can help with anything.
+    context_dict = {
+        "events": body.context.events,
+        "tasks": body.context.tasks,
+        "habits": body.context.habits,
+    }
+    system_prompt = f"""You are Schelude AI, a powerful intelligent assistant \
+built into a personal productivity app. You function exactly like ChatGPT \
+or Claude — you can answer anything, help with any topic, and you also \
+have special abilities to manage the user's schedule.
 
-USER'S CURRENT DATA:
-- Events this month: {len(body.context.events)}
-- Active tasks: {len(body.context.tasks)}
-- Habits tracked: {len(body.context.habits)}
-- Recent events: {event_titles}
-- Active tasks: {task_titles}
+USER CONTEXT:
+Events: {len(context_dict.get('events', []))} this month
+Tasks: {len(context_dict.get('tasks', []))} active
+Habits: {len(context_dict.get('habits', []))} tracked
+Recent events: {', '.join([str(e.get('title','')) for e in context_dict.get('events',[])[:5]]) or 'none'}
+Current tasks: {', '.join([str(t.get('title','')) for t in context_dict.get('tasks',[])[:5]]) or 'none'}
 
-You are like ChatGPT but embedded in a planner. You can:
-1. Schedule events and tasks (confirm when you do)
-2. Give detailed study plans, advice, tips
-3. Help plan weeks, months, projects
-4. Answer questions about any topic
-5. Give health, wellness, self-improvement advice
-6. Help with school subjects (explain concepts, give study strategies)
+YOUR CAPABILITIES:
+- Answer any question on any topic (science, math, history, coding, etc.)
+- Create detailed study plans with day-by-day breakdowns
+- Schedule events and tasks (confirm when added)
+- Give actionable advice on health, wellness, productivity
+- Help plan projects, weeks, semesters
+- Explain concepts clearly
+- Motivate and support the user
 
-RESPONSE RULES:
-- Be conversational, warm, and genuinely helpful
-- For study requests: give a specific day-by-day or week-by-week plan
-- For scheduling: confirm what was added with specifics
-- For advice: give 4-6 concrete actionable bullet points
-- For questions: answer fully like a knowledgeable friend
-- Use **bold** for key terms
-- Keep responses under 200 words unless a detailed plan is needed
-- Never give a generic fallback response
-- Always acknowledge what the user said specifically
+RESPONSE STYLE:
+- Be warm, direct, and genuinely helpful like a smart friend
+- Use **bold** for important terms and action items
+- Use bullet points for lists and plans
+- For study plans: break into specific days/weeks with topics
+- For scheduling: confirm what was added and when
+- For questions: give a complete, accurate answer
+- Never be vague or generic
+- Never mention API errors, model names, or technical issues
+- Max 300 words unless a detailed plan requires more
 
-If the user asks to study for a physics final: give a 2-week study plan broken into topics.
-If the user asks about recurring events: confirm the schedule.
-If the user asks anything else: help them fully."""
+EXAMPLES OF GOOD RESPONSES:
+User: "I need to cram physics in 2 weeks"
+You: "Here's your 2-week physics cram plan:
+**Week 1:**
+- Days 1-2: Mechanics (Newton's laws, kinematics)
+- Days 3-4: Energy, work, momentum
+- Day 5: Practice problems + review
+**Week 2:**
+- Days 6-7: Electricity and circuits
+- Days 8-9: Waves and optics
+- Days 10-11: Modern physics
+- Day 14: Full mock exam
+I've added daily study sessions to your calendar. Good luck! 💪"
+
+User: "What is the Pythagorean theorem"
+You: "The Pythagorean theorem states that in a right triangle, \
+**a² + b² = c²** where c is the hypotenuse (longest side). \
+For example, a triangle with sides 3 and 4 has a hypotenuse of 5."
+"""
 
     history_dicts = [{"role": m.role, "parts": m.parts} for m in body.history]
 
     parsed_result, gemini_response = await asyncio.gather(
         run_groq_parser(text),
-        call_gemini(text, history_dicts, context, system_prompt)
+        call_gemini(text, history_dicts, context_dict, system_prompt)
     )
 
     return {
