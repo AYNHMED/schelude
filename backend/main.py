@@ -2,6 +2,7 @@ import os
 import re
 import json
 import time
+import hashlib
 import asyncio
 import logging
 from contextlib import asynccontextmanager
@@ -18,6 +19,13 @@ from pydantic import BaseModel
 from groq import AsyncGroq
 from dotenv import load_dotenv
 
+# Optional: Upstash Vector SDK (gracefully skipped if not installed)
+try:
+    from upstash_vector import Index as VectorIndex
+    _vector_sdk_available = True
+except ImportError:
+    _vector_sdk_available = False
+
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
@@ -29,6 +37,17 @@ UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 API_TOKEN = os.getenv("API_TOKEN")
 ALLOWED_ORIGIN = os.getenv("ALLOWED_ORIGIN", "https://your-cloudflare-pages-url.pages.dev")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+UPSTASH_VECTOR_URL = os.getenv("UPSTASH_VECTOR_URL", "")
+UPSTASH_VECTOR_TOKEN = os.getenv("UPSTASH_VECTOR_TOKEN", "")
+
+# Upstash Vector — initialise SDK client if available, fall back to REST-only
+vector_index = None
+if UPSTASH_VECTOR_URL and UPSTASH_VECTOR_TOKEN and _vector_sdk_available:
+    try:
+        vector_index = VectorIndex(url=UPSTASH_VECTOR_URL, token=UPSTASH_VECTOR_TOKEN)
+        logger.info("Upstash Vector index connected via SDK")
+    except Exception as _ve:
+        logger.warning("Vector SDK init failed (REST fallback active): %s", _ve)
 
 PARSE_SYSTEM_PROMPT = (
     "Extract scheduling intent from user input. Return JSON only, no other text. Schema:\n"
@@ -213,6 +232,115 @@ async def get_valid_access_token():
     return google_tokens["access_token"]
 
 
+# ── Second Brain: Memory helpers ─────────────────────────────────────────────
+
+def make_memory_id(content: str) -> str:
+    """Deterministic-ish ID; uses current time so repeated content gets new slots."""
+    return hashlib.md5((content + str(time.time())).encode()).hexdigest()[:16]
+
+
+async def store_memory(content: str, metadata: dict, namespace: str = "schelude") -> None:
+    """Store a memory vector via the Upstash Vector REST API."""
+    if not UPSTASH_VECTOR_URL or not UPSTASH_VECTOR_TOKEN:
+        return
+    try:
+        mem_id = make_memory_id(content)
+        url = f"{UPSTASH_VECTOR_URL}/upsert"
+        headers = {
+            "Authorization": f"Bearer {UPSTASH_VECTOR_TOKEN}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "id": mem_id,
+            "data": content,
+            "metadata": {
+                **metadata,
+                "timestamp": time.time(),
+                "namespace": namespace,
+            },
+        }
+        await http_client.post(url, json=payload, headers=headers, timeout=10.0)
+    except Exception as e:
+        logger.warning("Memory store failed: %s", e)
+
+
+async def retrieve_memories(query: str, top_k: int = 8) -> list:
+    """Semantic search over stored memories via the Upstash Vector REST API."""
+    if not UPSTASH_VECTOR_URL or not UPSTASH_VECTOR_TOKEN:
+        return []
+    try:
+        url = f"{UPSTASH_VECTOR_URL}/query"
+        headers = {
+            "Authorization": f"Bearer {UPSTASH_VECTOR_TOKEN}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "data": query,
+            "topK": top_k,
+            "includeMetadata": True,
+            "includeData": True,
+        }
+        resp = await http_client.post(url, json=payload, headers=headers, timeout=10.0)
+        results = resp.json()
+        if isinstance(results, list):
+            return [
+                {
+                    "content": r.get("data", ""),
+                    "score": r.get("score", 0),
+                    "metadata": r.get("metadata", {}),
+                }
+                for r in results
+                if r.get("score", 0) > 0.6
+            ]
+        return []
+    except Exception as e:
+        logger.warning("Memory retrieval failed: %s", e)
+        return []
+
+
+async def store_event_memory(event: dict) -> None:
+    content = (
+        f"Event: {event.get('title', '')} on {event.get('date', 'unspecified')} "
+        f"at {event.get('time', 'unspecified')}. "
+        f"Category: {event.get('category', 'general')}. "
+        f"Priority: {event.get('priority', 'normal')}."
+    )
+    await store_memory(content, {
+        "type": "event",
+        "title": event.get("title", ""),
+        "category": event.get("category", ""),
+        "date": event.get("date", ""),
+    })
+
+
+async def store_task_memory(task: dict) -> None:
+    content = (
+        f"Task: {task.get('title', '')}. "
+        f"Due: {task.get('date', 'no due date')}. "
+        f"Category: {task.get('category', 'general')}. "
+        f"Priority: {task.get('priority', 'normal')}."
+    )
+    await store_memory(content, {
+        "type": "task",
+        "title": task.get("title", ""),
+        "category": task.get("category", ""),
+        "date": task.get("date", ""),
+    })
+
+
+async def store_conversation_memory(user_msg: str, ai_response: str) -> None:
+    content = (
+        f"User asked: {user_msg[:200]}. "
+        f"Assistant responded: {ai_response[:300]}"
+    )
+    await store_memory(content, {
+        "type": "conversation",
+        "user_message": user_msg[:100],
+    })
+
+
+# ── Input sanitisation ────────────────────────────────────────────────────────
+
 def sanitize_input(text: str) -> str:
     text = text[:500]
     text = re.sub(r"<[^>]+>", "", text)
@@ -295,44 +423,44 @@ async def run_groq_parser(text: str):
 
 
 async def call_gemini(message: str, history: list, context: dict, system_prompt: str) -> str:
-    if not GEMINI_API_KEY:
-        return "I'm not fully set up yet — ask the developer to configure me!"
-
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}"
-
-    contents = []
-    for h in history[-20:]:
-        role = h.get("role", "user")
-        # Gemini only accepts 'user' or 'model'
-        if role not in ("user", "model"):
-            role = "user"
-        contents.append({
-            "role": role,
-            "parts": [{"text": h.get("parts", "")}]
-        })
-    contents.append({"role": "user", "parts": [{"text": message}]})
-
-    payload = {
-        "system_instruction": {"parts": [{"text": system_prompt}]},
-        "contents": contents,
-        "generationConfig": {
-            "temperature": 0.7,
-            "maxOutputTokens": 1024
-        }
-    }
-
+    """Call Gemini 1.5 Flash via the v1 REST API. Returns only user-friendly strings on failure."""
     try:
+        if not GEMINI_API_KEY:
+            return "I'm thinking through that — please try again in a moment."
+
+        url = (
+            "https://generativelanguage.googleapis.com/v1/models/"
+            f"gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}"
+        )
+
+        contents = []
+        for h in history[-20:]:
+            role = h.get("role", "user")
+            if role not in ("user", "model"):
+                role = "user"
+            contents.append({"role": role, "parts": [{"text": h.get("parts", "")}]})
+        contents.append({"role": "user", "parts": [{"text": message}]})
+
+        payload = {
+            "system_instruction": {"parts": [{"text": system_prompt}]},
+            "contents": contents,
+            "generationConfig": {"temperature": 0.7, "maxOutputTokens": 1024},
+        }
+
         resp = await http_client.post(url, json=payload, timeout=30.0)
         data = resp.json()
+
         if "candidates" in data and data["candidates"]:
             return data["candidates"][0]["content"]["parts"][0]["text"]
-        elif "error" in data:
+
+        if "error" in data:
             logger.error("Gemini API error: %s", data["error"])
-            return "Hang tight, I'm thinking... Please try again in a moment."
-        return "I'm having a moment — please try again."
-    except Exception as e:
-        logger.error("Gemini connection error: %s", e)
-        return "Something went wrong on my end. Please try again."
+
+        return "I'm thinking through that — please try again in a moment."
+
+    except Exception as exc:
+        logger.error("call_gemini unhandled exception: %s", exc)
+        return "I'm thinking through that — please try again in a moment."
 
 
 @app.post("/chat")
@@ -412,16 +540,75 @@ For example, a triangle with sides 3 and 4 has a hypotenuse of 5."
 
     history_dicts = [{"role": m.role, "parts": m.parts} for m in body.history]
 
+    # ── Second Brain: inject relevant memories into the prompt ────────────────
+    memories = await retrieve_memories(text)
+    if memories:
+        memory_context = "\n\nRELEVANT MEMORIES FROM YOUR HISTORY:\n"
+        for m in memories:
+            memory_context += f"- {m['content']}\n"
+        system_prompt = system_prompt + memory_context
+
     parsed_result, gemini_response = await asyncio.gather(
         run_groq_parser(text),
         call_gemini(text, history_dicts, context_dict, system_prompt)
     )
+
+    # ── Second Brain: store this exchange + any created items ─────────────────
+    asyncio.create_task(store_conversation_memory(text, gemini_response))
+    if parsed_result:
+        if parsed_result.get("type") == "event":
+            asyncio.create_task(store_event_memory(parsed_result))
+        elif parsed_result.get("type") == "task":
+            asyncio.create_task(store_task_memory(parsed_result))
 
     return {
         "action": parsed_result,
         "response": gemini_response,
         "success": True
     }
+
+
+class MemoryStoreRequest(BaseModel):
+    type: str  # "event" | "task" | "habit" | "note"
+    data: dict = {}
+
+
+@app.post("/memory/store")
+async def memory_store(request: Request, body: MemoryStoreRequest):
+    token = request.headers.get("x-api-token")
+    if not token or token != API_TOKEN:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    try:
+        if body.type == "event":
+            await store_event_memory(body.data)
+        elif body.type == "task":
+            await store_task_memory(body.data)
+        elif body.type in ("habit", "note"):
+            title = body.data.get("title") or body.data.get("name", "")
+            content = f"{body.type.capitalize()}: {title}. {json.dumps(body.data)[:200]}"
+            await store_memory(content, {"type": body.type, **{k: str(v) for k, v in body.data.items() if isinstance(v, str)}})
+        else:
+            content = json.dumps(body.data)[:400]
+            await store_memory(content, {"type": body.type})
+        return {"success": True}
+    except Exception as e:
+        logger.error("Memory store endpoint error: %s", e)
+        return {"success": False}
+
+
+@app.get("/memory/search")
+async def memory_search(request: Request, q: str = ""):
+    token = request.headers.get("x-api-token")
+    if not token or token != API_TOKEN:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    if not q:
+        return {"success": True, "memories": []}
+
+    q = q[:300]
+    memories = await retrieve_memories(q, top_k=5)
+    return {"success": True, "memories": memories}
 
 
 @app.get("/auth/google")
