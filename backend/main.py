@@ -429,8 +429,7 @@ async def call_gemini(message: str, history: list, context: dict, system_prompt:
             return "I'm thinking through that — please try again in a moment."
 
         url = (
-            "https://generativelanguage.googleapis.com/v1/models/"
-            f"gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}"
+            f"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
         )
 
         contents = []
